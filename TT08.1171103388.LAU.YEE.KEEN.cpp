@@ -602,7 +602,7 @@ void render(){
     static int skipWidth = 0;
     static bool notFinishPrinting = false;
     static int printedHeight = 0;
-    int printedWidth = 0;
+    static int remainingWidth = 0;
     int remainingSpacesX = (width-1) - x;
     
     for(int i = 0; i < width + 1; i++ ){ // render top width
@@ -619,23 +619,22 @@ void render(){
         
         for(int c = 0; c < width; c++){ // render horizontal space
             
-            if(remainingSpacesX <= (charObj.A(printedHeight, 0, false, false)-1)){
+         /**   if(((width-1)-x) <= (charObj.A(printedHeight, 0, false, false)-1)){
                 notFinishPrinting = true;
-                printedWidth = remainingSpacesX;
-                remainingWidth++;
-            }
+                
+            }**/
             
             if (c==0){ // if is 1st dot print * to build border.
                 cout << "*" ;
                 
-            } else if((k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && x!=1)){ // 3rd statement to make sure that x!=1 and it is to print remaining char to opposite side.
+            } else if((k==y && c==x) || (c==x && notFinishPrinting)){ // if not 1st dot, check if the current coordinate match x && y value to print char.
                 
                 notFinishPrinting = true;
-                if ((printedHeight <= 10 && notFinishPrinting) || ((remainingWidth <= (charObj.A(printedHeight, 0, false, false)-1)) && notFinishPrinting)){
+                if (printedHeight <= 10 && notFinishPrinting){
                     if(directionInput == HORIZONTAL){
                         
                         if(remainingSpacesX <= (charObj.A(printedHeight, 0, false, false)-1)){
-                            for(printedWidth = 0; printedWidth <= remainingSpacesX; printedWidth++){
+                            for(int printedWidth = 0; printedWidth <= remainingSpacesX; printedWidth++){
                                 charObj.A(printedHeight, printedWidth, true, true);
                             }
                             skipWidth = remainingSpacesX;
@@ -694,7 +693,7 @@ int main(){
             x++;
         }
         render();
-        usleep(1000000);
+        usleep(100000);
     }
    
 }
