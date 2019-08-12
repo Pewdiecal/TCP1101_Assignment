@@ -24,7 +24,7 @@ int directionInput = 0;
 class charArts {
 public:
     
-    int A(int seq_v, int seq_h, bool print, bool isHorizontal){
+    int A(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
                             "====  ====",
                             "===    ===",
@@ -40,15 +40,15 @@ public:
         if(print){
             
             if(isHorizontal){
-                cout << array[seq_v].at(seq_h);
+                cout << array[seq_vertical].at(seq_horizontal);
             }else{
-                cout << array[seq_v];
+                cout << array[seq_vertical];
             }
             
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize;
+        return widthSize-1;
     }
     
     int B(int seq, bool print){
@@ -602,7 +602,6 @@ void render(){
     static int skipWidth = 0;
     static bool notFinishPrinting = false;
     static int printedHeight = 0;
-    static int remainingWidth = 0;
     int remainingSpacesX = (width-1) - x;
     
     for(int i = 0; i < width + 1; i++ ){ // render top width
@@ -619,11 +618,6 @@ void render(){
         
         for(int c = 0; c < width; c++){ // render horizontal space
             
-         /**   if(((width-1)-x) <= (charObj.A(printedHeight, 0, false, false)-1)){
-                notFinishPrinting = true;
-                
-            }**/
-            
             if (c==0){ // if is 1st dot print * to build border.
                 cout << "*" ;
                 
@@ -633,20 +627,20 @@ void render(){
                 if (printedHeight <= 10 && notFinishPrinting){
                     if(directionInput == HORIZONTAL){
                         
-                        if(remainingSpacesX <= (charObj.A(printedHeight, 0, false, false)-1)){
+                        if(remainingSpacesX <= charObj.A(printedHeight, 0, false, false)){
                             for(int printedWidth = 0; printedWidth <= remainingSpacesX; printedWidth++){
                                 charObj.A(printedHeight, printedWidth, true, true);
                             }
                             skipWidth = remainingSpacesX;
-                        }else if(remainingSpacesX >= (charObj.A(printedHeight, 0, false, false)-1)){
+                        }else if(remainingSpacesX >= charObj.A(printedHeight, 0, false, false)){
                             charObj.A(printedHeight, 0, true, false);
-                            skipWidth = (charObj.A(printedHeight, 0, false, false)-1);
+                            skipWidth = charObj.A(printedHeight, 0, false, false);
                         }
                         printedHeight ++;
                         
                     } else if(directionInput == VERTICAL){
                         charObj.A(printedHeight, 0, true, false);
-                        skipWidth = (charObj.A(printedHeight, 0, false, false)-1);
+                        skipWidth = charObj.A(printedHeight, 0, false, false);
                         printedHeight ++;
                     }
                 } else{
@@ -656,7 +650,7 @@ void render(){
                 }
                 
             } else{ // if not match x && y value, just print blank space
-                if (skipWidth <= (charObj.A(0, 0, false, false)-1) && skipWidth >0){
+                if (skipWidth <= charObj.A(0, 0, false, false) && skipWidth >0){
                     skipWidth--;
                 } else{
                     cout << " ";
