@@ -599,10 +599,15 @@ public:
 void render(){
     charArts charObj;
     system("clear"); // check OS here
-    static int skipWidth = 0;
+    static int skipWidth = 0; // spaces needs to be deleted
+    int charWidth = charObj.A(0, 0, false, false); // total width of char
     static bool notFinishPrinting = false;
     static int printedHeight = 0;
-    int remainingSpacesX = (width-1) - x;
+    static int printedWidth = 0;
+    int remainingSpacesX = (width-1) - x; // remaining printing spaces on X axis based on anchor dot
+    
+    int skipWidth_debug = 0; // DEBUGGING PURPOSES
+    bool notFinishPrinting_debug;
     
     for(int i = 0; i < width + 1; i++ ){ // render top width
         cout << "-";
@@ -613,44 +618,49 @@ void render(){
         notFinishPrinting = true;
         printedHeight = (height-y); //will be = 11 when y = 9, Thus, cause if (printedHeight <= 10 && notFinishPrinting) return false.
     }
-    
+   /** if(remainingSpacesX <= charWidth){
+        notFinishPrinting = true;
+    }**/
     for(int k = 0; k < height; k++){ // render height
-        
         for(int c = 0; c < width; c++){ // render horizontal space
-            
             if (c==0){ // if is 1st dot print * to build border.
                 cout << "*" ;
                 
             } else if((k==y && c==x) || (c==x && notFinishPrinting)){ // if not 1st dot, check if the current coordinate match x && y value to print char.
-                
                 notFinishPrinting = true;
+                notFinishPrinting_debug = notFinishPrinting; //DEBUGGING PURPOSES
                 if (printedHeight <= 10 && notFinishPrinting){
+                    notFinishPrinting_debug = notFinishPrinting; //DEBUGGING PURPOSES
                     if(directionInput == HORIZONTAL){
                         
-                        if(remainingSpacesX <= charObj.A(printedHeight, 0, false, false)){
-                            for(int printedWidth = 0; printedWidth <= remainingSpacesX; printedWidth++){
+                        if(remainingSpacesX <= charWidth){
+                            for(printedWidth = 0; printedWidth <= remainingSpacesX; printedWidth++){
                                 charObj.A(printedHeight, printedWidth, true, true);
                             }
                             skipWidth = remainingSpacesX;
-                        }else if(remainingSpacesX >= charObj.A(printedHeight, 0, false, false)){
+                            skipWidth_debug = skipWidth; //DEBUGGING PURPOSES
+                        }else if(remainingSpacesX >= charWidth){
                             charObj.A(printedHeight, 0, true, false);
-                            skipWidth = charObj.A(printedHeight, 0, false, false);
+                            skipWidth = charWidth;
+                            skipWidth_debug = skipWidth; //DEBUGGING PURPOSES
                         }
                         printedHeight ++;
                         
                     } else if(directionInput == VERTICAL){
                         charObj.A(printedHeight, 0, true, false);
-                        skipWidth = charObj.A(printedHeight, 0, false, false);
+                        skipWidth = charWidth;
+                        skipWidth_debug = skipWidth; //DEBUGGING PURPOSES
                         printedHeight ++;
                     }
                 } else{
                     printedHeight = 0;
                     cout << " ";
                     notFinishPrinting = false;
+                    notFinishPrinting_debug = notFinishPrinting; //DEBUGGING PURPOSES
                 }
                 
             } else{ // if not match x && y value, just print blank space
-                if (skipWidth <= charObj.A(0, 0, false, false) && skipWidth >0){
+                if (skipWidth <= charWidth && skipWidth >0){
                     skipWidth--;
                 } else{
                     cout << " ";
@@ -672,6 +682,18 @@ void render(){
     }
     cout << endl;
     
+    cout << endl << endl;
+    cout << "******************* DEBUG *******************" << endl;
+    cout << "Current X = " << x << endl;
+    cout << "Current Y = " << y << endl;
+    cout << "skipWidth = " << skipWidth_debug << endl;
+    cout << "charWidth = " << charWidth << endl;
+    cout << "notFinishPrinting = " << notFinishPrinting << endl;
+    cout << "printedHeight = " << printedHeight << endl;
+    cout << "printedWidth = " << printedWidth << endl;
+    cout << "remainingSpacesX = " << remainingSpacesX << endl;
+    cout << "******************* DEBUG *******************" << endl;
+    
 }
 int main(){
     x = 20; //BUG when x++ = 29
@@ -687,7 +709,7 @@ int main(){
             x++;
         }
         render();
-        usleep(100000);
+        usleep(1000000);
     }
    
 }
