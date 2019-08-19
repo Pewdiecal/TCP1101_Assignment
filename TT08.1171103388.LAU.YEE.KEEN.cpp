@@ -24,7 +24,7 @@ const int width = 40;
 const int height = 20;
 int x, y;
 enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN};
-int directionInput = 1;
+int directionInput = 3;
 void render();
 
 
@@ -626,8 +626,13 @@ int main(){
         }
         if (x > 39){
             x = 1;
-        } else if (y < 1){
-            y = height-1;
+        } else if (y < 1 || y >20){
+            if(y<1){
+                y = height-1;
+            } else if(y > 20){
+                y = 1;
+            }
+            
         }
         usleep(1000000);
     }
@@ -670,13 +675,13 @@ void render(){
                     notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
                     if(directionInput == HORIZONTAL_LEFT || directionInput == HORIZONTAL_RIGHT){
                         
-                        if(remainingSpacesX < charWidth){ // MARK: when x < 9
+                        if((remainingSpacesX < charWidth)){ // MARK: when x < 9
                             if(c==1 && remainingSpacesX >=0){
                                 int test = 0; // MARK: NEED TO BE OPTIMIZED, cause skipWidth did not start count from 0
                                 for(int contPrintWidth = remainingSpacesX+1; contPrintWidth <= charWidth; contPrintWidth++){
                                     charObj.A(printedHeight, contPrintWidth, true, true);
                                     
-                                    if(test !=0){
+                                    if(test !=0){ // MARK: to make skipWidth start counting from 0
                                         skipWidth++;
                                     }
                                     test++;
