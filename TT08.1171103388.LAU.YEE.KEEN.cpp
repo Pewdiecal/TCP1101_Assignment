@@ -604,10 +604,9 @@ public:
 
 
 int main(){
-    x = 27; //BUG when x++ = 29
+    x = 30;
     y = 5;
     while (true){
-         //sleep(10);
         render();
         switch (directionInput) {
             case HORIZONTAL_LEFT:
@@ -637,17 +636,17 @@ int main(){
 
 void render(){
     charArts charObj;
-    system("clear"); // check OS here
-    static int skipWidth = 0; // spaces needs to be deleted
-    int charWidth = charObj.A(0, 0, false, false); // total width of char
+    system("clear"); // MARK: check OS here
+    static int skipWidth = 0; // MARK: spaces needs to be deleted
+    int charWidth = charObj.A(0, 0, false, false); // MARK: total width of char
     static bool notFinishPrinting = false;
     static int printedHeight = 0;
     static int printedWidth = 0;
-    int remainingSpacesX = (width-1) - x; // remaining printing spaces on X axis based on anchor dot
-    int skipWidth_debug = 0; // DEBUGGING PURPOSES
+    int remainingSpacesX = (width-1) - x; // MARK: remaining printing spaces on X axis based on anchor dot
+    int skipWidth_debug = 0; // MARK: DEBUGGING PURPOSES
     bool notFinishPrinting_debug;
     
-    for(int i = 0; i < width + 1; i++ ){ // render top width
+    for(int i = 0; i < width + 1; i++ ){ // MARK: render top width
         cout << "-";
     }
     cout << endl;
@@ -660,25 +659,29 @@ void render(){
     for(int k = 0; k < height; k++){ // MARK: render height
         for(int c = 0; c < width; c++){ // MARK: render horizontal space
             
-            if (c==0){ // if is 1st dot print * to build border.
+            if (c==0){ // MARK: if is 1st dot print * to build border.
                 cout << "*" ;
                 
-            } else if(((k==y && c==1 && remainingSpacesX < charWidth) || (k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && remainingSpacesX < charWidth))){ // if not 1st dot, check if the current coordinate match x && y value to print char.
-                
+            } else if(((k==y && c==1 && remainingSpacesX < charWidth) || (k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && remainingSpacesX < charWidth))){ // MARK: if not 1st dot, check if the current coordinate match x && y value to print char.
                 
                 notFinishPrinting = true; // BUG: = true when x==40;
-                notFinishPrinting_debug = notFinishPrinting; //DEBUGGING PURPOSES
+                notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
                 if (printedHeight <= 10 && notFinishPrinting){
-                    notFinishPrinting_debug = notFinishPrinting; //DEBUGGING PURPOSES
+                    notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
                     if(directionInput == HORIZONTAL_LEFT || directionInput == HORIZONTAL_RIGHT){
                         
                         if(remainingSpacesX < charWidth){ // MARK: when x < 9
                             if(c==1 && remainingSpacesX >=0){
+                                int test = 0; // MARK: NEED TO BE OPTIMIZED, cause skipWidth did not start count from 0
                                 for(int contPrintWidth = remainingSpacesX+1; contPrintWidth <= charWidth; contPrintWidth++){
                                     charObj.A(printedHeight, contPrintWidth, true, true);
-                                    skipWidth = contPrintWidth;
                                     
+                                    if(test !=0){
+                                        skipWidth++;
+                                    }
+                                    test++;
                                 }
+                                
                             }
                             if((k==y && c==x) || (c==x && notFinishPrinting)){
                                 for(printedWidth = 0; printedWidth <= remainingSpacesX; printedWidth++){
@@ -687,14 +690,12 @@ void render(){
                                     
                                 }
                             }
-                            //skipWidth = remainingSpacesX;
+                            skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
                             
-                            skipWidth_debug = skipWidth; //DEBUGGING PURPOSES
-                            
-                        } else if(remainingSpacesX >= charWidth){ //MARK: when x >=9
+                        } else if(remainingSpacesX >= charWidth){ // MARK: when x >=9
                             charObj.A(printedHeight, 0, true, false);
                             skipWidth = charWidth;
-                            skipWidth_debug = skipWidth; //DEBUGGING PURPOSES
+                            skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
                         }
                         if((k==y && c==x) || (c==x && notFinishPrinting)){
                             printedHeight ++;
@@ -703,7 +704,7 @@ void render(){
                     } else if(directionInput == VERTICAL_UP || directionInput == VERTICAL_DOWN){
                         charObj.A(printedHeight, 0, true, false);
                         skipWidth = charWidth;
-                        skipWidth_debug = skipWidth; //DEBUGGING PURPOSES
+                        skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
                         printedHeight ++;
                     }
                     
@@ -712,10 +713,10 @@ void render(){
                     printedHeight = 0;
                     cout << " ";
                     notFinishPrinting = false;
-                    notFinishPrinting_debug = notFinishPrinting; //DEBUGGING PURPOSES
+                    notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
                 }
                 
-            } else{ // if not match x && y value, just print blank space
+            } else{ // MARK: if not match x && y value, just print blank space
                 if (skipWidth <= charWidth && skipWidth >0){
                     skipWidth--;
                 } else{
@@ -733,7 +734,7 @@ void render(){
         
     }
     
-    for(int i = 0; i < width + 1; i++ ){ // render bottom width
+    for(int i = 0; i < width + 1; i++ ){ // MARK: render bottom width
         cout << "-";
     }
     cout << endl;
