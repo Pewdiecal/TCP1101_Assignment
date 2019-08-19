@@ -24,8 +24,9 @@ const int width = 40;
 const int height = 20;
 int x, y;
 enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN};
-int directionInput = 3;
+int directionInput = 2;
 void render();
+void coordinateManager();
 
 
 class charArts {
@@ -58,7 +59,7 @@ public:
         return widthSize-1;
     }
     
-    int B(int seq, bool print){
+    int B(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=      ===",
             "=  ===  ==",
@@ -71,14 +72,20 @@ public:
             "=      ===",
             "==========" };
         if(print){
-            cout << array[seq];
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
         }
         
-        int widthSize = array[0].size();
-        return widthSize;
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
     }
     
-    void C(){
+    int C(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "===     ==",
             "==  ===  =",
@@ -91,60 +98,104 @@ public:
             "===     ==",
             "==========" };
         
-    }
-    
-    void D(){
-        string array[] = {  "==========",
-            "=       ==",
-            "=  ====  =",
-            "=  ====  =",
-            "=  ====  =",
-            "=  ====  =",
-            "=  ====  =",
-            "=  ====  =",
-            "=  ====  =",
-            "=       ==",
-            "==========" };
-        
-    }
-    
-    void E(){
-        string array[] = {  "==========",
-            "=        =",
-            "=  =======",
-            "=  =======",
-            "=  =======",
-            "=      ===",
-            "=  =======",
-            "=  =======",
-            "=  =======",
-            "=        =",
-            "==========" };
-        
-    }
-    
-    void F(){
-        
-        string array[] = {  "==========",
-            "=        =",
-            "=  =======",
-            "=  =======",
-            "=  =======",
-            "=      ===",
-            "=  =======",
-            "=  =======",
-            "=  =======",
-            "=  =======",
-            "==========" };
-        
-        for (int i = 0; i < 11; i++){
-            cout << array[i] << endl;
-            usleep(300000);
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
         }
         
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
     }
     
-    void G(){
+    int D(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
+        string array[] = {  "==========",
+            "=       ==",
+            "=  ====  =",
+            "=  ====  =",
+            "=  ====  =",
+            "=  ====  =",
+            "=  ====  =",
+            "=  ====  =",
+            "=  ====  =",
+            "=       ==",
+            "==========" };
+        
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+    }
+    
+    int E(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
+        string array[] = {  "==========",
+            "=        =",
+            "=  =======",
+            "=  =======",
+            "=  =======",
+            "=      ===",
+            "=  =======",
+            "=  =======",
+            "=  =======",
+            "=        =",
+            "==========" };
+        
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+    }
+    
+    int F(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
+        
+        string array[] = {  "==========",
+            "=        =",
+            "=  =======",
+            "=  =======",
+            "=  =======",
+            "=      ===",
+            "=  =======",
+            "=  =======",
+            "=  =======",
+            "=  =======",
+            "==========" };
+        
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
+    }
+    
+    int G(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         
         string array[] = {  "==========",
             "==      ==",
@@ -158,9 +209,22 @@ public:
             "==      ==",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void H(){
+    int H(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=  ====  =",
             "=  ====  =",
@@ -172,9 +236,22 @@ public:
             "=  ====  =",
             "=  ====  =",
             "==========" };
+        
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
     }
     
-    void I(){
+    int I(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "======",
             "=    =",
             "==  ==",
@@ -187,9 +264,22 @@ public:
             "=    =",
             "======" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void J(){
+    int J(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=====    =",
             "======  ==",
@@ -202,10 +292,23 @@ public:
             "==     ===",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
         
     }
     
-    void K(){
+    int K(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=  ====  =",
             "=  ===  ==",
@@ -218,10 +321,22 @@ public:
             "=  ====  =",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
         
     }
     
-    void L(){
+    int L(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=  =======",
             "=  =======",
@@ -234,9 +349,22 @@ public:
             "=        =",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void M(){
+    int M(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "===========",
             "=  =====  =",
             "=   ===   =",
@@ -249,10 +377,23 @@ public:
             "=  =====  =",
             "===========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
         
     }
     
-    void N(){
+    int N(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "=============",
             "=  =======  =",
             "=   ======  =",
@@ -265,9 +406,22 @@ public:
             "=  =======  =",
             "=============" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void O(){
+    int O(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "===    ===",
             "==  ==  ==",
@@ -279,9 +433,22 @@ public:
             "==  ==  ==",
             "===    ===",
             "==========" };
+        
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
     }
     
-    void P(){
+    int P(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=       ==",
             "=  ====  =",
@@ -293,9 +460,22 @@ public:
             "=  =======",
             "=  =======",
             "==========" };
+        
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
     }
     
-    void Q(){
+    int Q(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "==      ==",
             "=  ====  =",
@@ -308,9 +488,22 @@ public:
             "==      ==",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void R(){
+    int R(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=       ==",
             "=  ====  =",
@@ -323,10 +516,23 @@ public:
             "=  ====  =",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
         
     }
     
-    void S(){
+    int S(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "==      ==",
             "=  ====  =",
@@ -339,9 +545,21 @@ public:
             "==      ==",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
     }
     
-    void T(){
+    int T(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=        =",
             "====  ====",
@@ -354,9 +572,21 @@ public:
             "====  ====",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
     }
     
-    void U(){
+    int U(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=  ====  =",
             "=  ====  =",
@@ -369,9 +599,21 @@ public:
             "==      ==",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
     }
     
-    void V(){
+    int V(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=  ====  =",
             "=  ====  =",
@@ -384,9 +626,22 @@ public:
             "====  ====",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void W(){
+    int W(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "================",
             "=  ====  ====  =",
             "=  ====  ====  =",
@@ -399,10 +654,23 @@ public:
             "====  ====  ====",
             "================" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
         
     }
     
-    void X(){
+    int X(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=   ==   =",
             "==  ==  ==",
@@ -415,10 +683,23 @@ public:
             "=  ====  =",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
         
     }
     
-    void Y(){
+    int Y(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=  ====  =",
             "=   ==   =",
@@ -431,10 +712,22 @@ public:
             "====  ====",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
         
     }
     
-    void Z(){
+    int Z(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "=        =",
             "======  ==",
@@ -447,9 +740,22 @@ public:
             "=        =",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void _0(){
+    int _0(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==============",
             "====      ====",
             "===   ==   ===",
@@ -462,9 +768,22 @@ public:
             "====      ====",
             "==============" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void _1(){
+    int _1(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "==========",
             "====  ====",
             "===   ====",
@@ -477,9 +796,22 @@ public:
             "==      ==",
             "==========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void _2(){
+    int _2(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "===========",
             "====   ====",
             "==   =   ==",
@@ -492,9 +824,22 @@ public:
             "=        ==",
             "===========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void _3(){
+    int _3(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "===========",
             "====   ====",
             "==   =   ==",
@@ -507,9 +852,22 @@ public:
             "====   ====",
             "===========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void _4(){
+    int _4(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "===========",
             "======  ===",
             "=====   ===",
@@ -522,9 +880,22 @@ public:
             "======  ===",
             "===========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void _5(){
+    int _5(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "===========",
             "=         =",
             "=  ========",
@@ -537,9 +908,22 @@ public:
             "===     ===",
             "===========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
+        
     }
     
-    void _6(){
+    int _6(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "===========",
             "==       ==",
             "=  =====  =",
@@ -552,9 +936,21 @@ public:
             "===     ===",
             "===========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
     }
     
-    void _7(){
+    int _7(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "===========",
             "=         =",
             "=  =====  =",
@@ -567,10 +963,22 @@ public:
             "====  =====",
             "===========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
         
     }
     
-    void _8(){
+    int _8(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "===========",
             "===     ===",
             "==  ===  ==",
@@ -583,10 +991,21 @@ public:
             "===     ===",
             "===========" };
         
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
         
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
     }
     
-    void _9(){
+    int _9(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
         string array[] = {  "===========",
             "===     ===",
             "==  ===   =",
@@ -598,52 +1017,68 @@ public:
             "========  =",
             "========  =",
             "===========" };
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return widthSize-1;
         
     }
 };
 
 
 int main(){
-    x = 30;
-    y = 5;
+    x=20;
+    y=5;
     while (true){
         render();
-        switch (directionInput) {
-            case HORIZONTAL_LEFT:
-                x--;
-                break;
-            case HORIZONTAL_RIGHT:
-                x++;
-                break;
-            case VERTICAL_UP:
-                y--;
-                break;
-            case VERTICAL_DOWN:
-                y++;
-                break;
-            default:
-                break;
-        }
-        if (x > 39){
-            x = 1;
-        } else if (y < 1 || y >20){
-            if(y<1){
-                y = height-1;
-            } else if(y > 20){
-                y = 1;
-            }
-            
-        }
+        coordinateManager();
         usleep(1000000);
     }
    
+}
+
+void coordinateManager(){
+    switch (directionInput) {
+        case HORIZONTAL_LEFT:
+            x--;
+            break;
+        case HORIZONTAL_RIGHT:
+            x++;
+            break;
+        case VERTICAL_UP:
+            y--;
+            break;
+        case VERTICAL_DOWN:
+            y++;
+            break;
+        default:
+            break;
+    }
+    if (x > width-1){
+        x = 1;
+    } else if (y < 0 || y >height){
+        if(y<0){
+            y = height-1;
+        } else if(y > height){
+            y = 1;
+        }
+        
+    }
 }
 
 void render(){
     charArts charObj;
     system("clear"); // MARK: check OS here
     static int skipWidth = 0; // MARK: spaces needs to be deleted
-    int charWidth = charObj.A(0, 0, false, false); // MARK: total width of char
+    int charWidth = charObj.W(0, 0, false, false); // MARK: total width of char
     static bool notFinishPrinting = false;
     static int printedHeight = 0;
     static int printedWidth = 0;
@@ -673,46 +1108,38 @@ void render(){
                 notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
                 if (printedHeight <= 10 && notFinishPrinting){
                     notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
-                    if(directionInput == HORIZONTAL_LEFT || directionInput == HORIZONTAL_RIGHT){
                         
-                        if((remainingSpacesX < charWidth)){ // MARK: when x < 9
-                            if(c==1 && remainingSpacesX >=0){
-                                int test = 0; // MARK: NEED TO BE OPTIMIZED, cause skipWidth did not start count from 0
-                                for(int contPrintWidth = remainingSpacesX+1; contPrintWidth <= charWidth; contPrintWidth++){
-                                    charObj.A(printedHeight, contPrintWidth, true, true);
-                                    
-                                    if(test !=0){ // MARK: to make skipWidth start counting from 0
-                                        skipWidth++;
-                                    }
-                                    test++;
-                                }
+                    if((remainingSpacesX < charWidth)){ // MARK: when x < 9
+                        if(c==1 && remainingSpacesX >=0){
+                            int test = 0; // MARK: NEED TO BE OPTIMIZED, cause skipWidth did not start count from 0
+                            for(int contPrintWidth = remainingSpacesX+1; contPrintWidth <= charWidth; contPrintWidth++){
+                                charObj.W(printedHeight, contPrintWidth, true, true);
                                 
-                            }
-                            if((k==y && c==x) || (c==x && notFinishPrinting)){
-                                for(printedWidth = 0; printedWidth <= remainingSpacesX; printedWidth++){
-                                    charObj.A(printedHeight, printedWidth, true, true);
-                                    skipWidth = printedWidth;
-                                    
+                                if(test !=0){ // MARK: to make skipWidth start counting from 0
+                                    skipWidth++;
                                 }
+                                test++;
                             }
-                            skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
                             
-                        } else if(remainingSpacesX >= charWidth){ // MARK: when x >=9
-                            charObj.A(printedHeight, 0, true, false);
-                            skipWidth = charWidth;
-                            skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
                         }
                         if((k==y && c==x) || (c==x && notFinishPrinting)){
-                            printedHeight ++;
+                            for(printedWidth = 0; printedWidth <= remainingSpacesX; printedWidth++){
+                                charObj.W(printedHeight, printedWidth, true, true);
+                                skipWidth = printedWidth;
+                                
+                            }
                         }
-                        
-                    } else if(directionInput == VERTICAL_UP || directionInput == VERTICAL_DOWN){
-                        charObj.A(printedHeight, 0, true, false);
+                        skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
+    
+                    } else if(remainingSpacesX >= charWidth){ // MARK: when x >=9
+                        charObj.W(printedHeight, 0, true, false);
                         skipWidth = charWidth;
                         skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
-                        printedHeight ++;
                     }
                     
+                    if((k==y && c==x) || (c==x && notFinishPrinting)){
+                        printedHeight ++;
+                    }
                     
                 } else{
                     printedHeight = 0;
