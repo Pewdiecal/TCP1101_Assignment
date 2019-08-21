@@ -24,7 +24,7 @@ const int width = 40;
 const int height = 20;
 int x, y;
 enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN};
-int directionInput = 2;
+int directionInput = 3;
 void render();
 void coordinateManager();
 
@@ -1035,7 +1035,7 @@ public:
 
 
 int main(){
-    x=20;
+    x=35;
     y=5;
     while (true){
         render();
@@ -1080,6 +1080,7 @@ void render(){
     static int skipWidth = 0; // MARK: spaces needs to be deleted
     int charWidth = charObj.W(0, 0, false, false); // MARK: total width of char
     static bool notFinishPrinting = false;
+    static bool isWrapAroundEnabled = false; // MARK: enable or disable wrap around effect for X axis
     static int printedHeight = 0;
     static int printedWidth = 0;
     int remainingSpacesX = (width-1) - x; // MARK: remaining printing spaces on X axis based on anchor dot
@@ -1102,7 +1103,7 @@ void render(){
             if (c==0){ // MARK: if is 1st dot print * to build border.
                 cout << "*" ;
                 
-            } else if(((k==y && c==1 && remainingSpacesX < charWidth) || (k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && remainingSpacesX < charWidth))){ // MARK: if not 1st dot, check if the current coordinate match x && y value to print char.
+            } else if(((k==y && c==1 && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && remainingSpacesX < charWidth && isWrapAroundEnabled))){ // MARK: if not 1st dot, check if the current coordinate match x && y value to print char.
                 
                 notFinishPrinting = true; // BUG: = true when x==40;
                 notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
@@ -1110,7 +1111,7 @@ void render(){
                     notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
                         
                     if((remainingSpacesX < charWidth)){ // MARK: when x < 9
-                        if(c==1 && remainingSpacesX >=0){
+                       if(c==1 && remainingSpacesX >=0 && isWrapAroundEnabled){
                             int test = 0; // MARK: NEED TO BE OPTIMIZED, cause skipWidth did not start count from 0
                             for(int contPrintWidth = remainingSpacesX+1; contPrintWidth <= charWidth; contPrintWidth++){
                                 charObj.W(printedHeight, contPrintWidth, true, true);
