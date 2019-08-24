@@ -24,11 +24,12 @@ using namespace std;
 const int width = 40;
 const int height = 20;
 int x, y;
+bool isPaused = false;
 enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN};
 int directionInput;
 string charList = "01";
 void render();
-void coordinateManager();
+void coordinateManager(bool pauseStats);
 string *charStager();
 void inputHandler();
 
@@ -1042,35 +1043,37 @@ int main(){
     charStager();
     x=2;
     y=5;
-    directionInput = HORIZONTAL_RIGHT;
+    directionInput = HORIZONTAL_LEFT;
     while (true){
         render();
-        coordinateManager();
+        coordinateManager(isPaused);
         usleep(1000000);
     }
     //inputHandler();
     
 }
 
-void coordinateManager(){
-    switch (directionInput) {
-        case HORIZONTAL_LEFT:
-            x--;
-            break;
-        case HORIZONTAL_RIGHT:
-            x++;
-            break;
-        case VERTICAL_UP:
-            y--;
-            break;
-        case VERTICAL_DOWN:
-            y++;
-            break;
-        default:
-            break;
+void coordinateManager(bool pauseStats){
+    if(!pauseStats){
+        switch (directionInput) {
+            case HORIZONTAL_LEFT:
+                x--;
+                break;
+            case HORIZONTAL_RIGHT:
+                x++;
+                break;
+            case VERTICAL_UP:
+                y--;
+                break;
+            case VERTICAL_DOWN:
+                y++;
+                break;
+            default:
+                break;
+        }
     }
-    if (x > width-1){
-        x = 1;
+    if (x > width-1 || x < 1){
+        isPaused = true;
     } else if (y < 0 || y >height){
         if(y<0){
             y = height-1;
@@ -1219,13 +1222,13 @@ void render(){
             if (c==0){ // MARK: if is 1st dot print * to build border.
                 cout << "*" ;
                 
-            } else if(((k==y && c==1 && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && remainingSpacesX < charWidth && isWrapAroundEnabled))){ // MARK: if not 1st dot, check if the current coordinate match x && y value to print char.
+            } else if(((k==y && c==1 && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && remainingSpacesX < charWidth && isWrapAroundEnabled) || (isPaused && c==1) )){ // MARK: if not 1st dot, check if the current coordinate match x && y value to print char.
                 
                 notFinishPrinting = true; // BUG: = true when x==40;
                 notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
                 if (printedHeight <= 10 && notFinishPrinting){
                     notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
-                    //displayedPercentage = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
+                    displayedPercentage = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
                     if((remainingSpacesX < charWidth)){ // MARK: when x < 9
                        if(c==1 && remainingSpacesX >=0 && isWrapAroundEnabled){
                             int test = 0; // MARK: NEED TO BE OPTIMIZED, cause skipWidth did not start count from 0
@@ -1255,6 +1258,10 @@ void render(){
                         cout << *(ptr_stagedChar+printedHeight);
                         skipWidth = charWidth;
                         skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
+                    } else if(isPaused && c==1){
+                        for(int width = 1; width <= charWidth; i++){
+                            cout << (*(ptr_stagedChar+printedHeight)).at(width);
+                        }
                     }
                     
                     if((k==y && c==x) || (c==x && notFinishPrinting)){
