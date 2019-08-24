@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <string>
+#include <locale>
 #ifdef __APPLE__
 #include <unistd.h>
 #endif
@@ -24,16 +25,19 @@ const int width = 40;
 const int height = 20;
 int x, y;
 enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN};
-int directionInput = 3;
+int directionInput;
+string charList = "01";
 void render();
 void coordinateManager();
+string *charStager();
+void inputHandler();
 
 
 class charArts {
 public:
     
-    int A(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *A(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "====  ====",
             "===    ===",
             "==  ==  ==",
@@ -56,11 +60,11 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int B(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *B(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=      ===",
             "=  ===  ==",
             "=  ====  =",
@@ -82,11 +86,11 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int C(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *C(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "===     ==",
             "==  ===  =",
             "=  =======",
@@ -109,11 +113,11 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int D(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *D(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=       ==",
             "=  ====  =",
             "=  ====  =",
@@ -136,11 +140,11 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int E(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *E(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=        =",
             "=  =======",
             "=  =======",
@@ -163,12 +167,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int F(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
+    string *F(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
         
-        string array[] = {  "==========",
+       static string array[] = {  "==========",
             "=        =",
             "=  =======",
             "=  =======",
@@ -191,13 +195,13 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int G(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
+    string *G(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
         
-        string array[] = {  "==========",
+       static string array[] = {  "==========",
             "==      ==",
             "=   ==   =",
             "=  ====  =",
@@ -220,12 +224,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int H(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *H(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=  ====  =",
             "=  ====  =",
             "=  ====  =",
@@ -248,11 +252,11 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int I(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "======",
+    string *I(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "======",
             "=    =",
             "==  ==",
             "==  ==",
@@ -275,12 +279,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int J(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *J(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=====    =",
             "======  ==",
             "======  ==",
@@ -303,13 +307,13 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
         
     }
     
-    int K(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *K(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=  ====  =",
             "=  ===  ==",
             "=  ==  ===",
@@ -332,12 +336,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int L(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *L(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=  =======",
             "=  =======",
             "=  =======",
@@ -360,12 +364,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int M(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "===========",
+    string *M(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "===========",
             "=  =====  =",
             "=   ===   =",
             "=  =   =  =",
@@ -388,13 +392,13 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
         
     }
     
-    int N(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "=============",
+    string *N(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "=============",
             "=  =======  =",
             "=   ======  =",
             "=    =====  =",
@@ -417,12 +421,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int O(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *O(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "===    ===",
             "==  ==  ==",
             "=  ====  =",
@@ -445,11 +449,11 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int P(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *P(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=       ==",
             "=  ====  =",
             "=  ====  =",
@@ -472,11 +476,11 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int Q(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *Q(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "==      ==",
             "=  ====  =",
             "=  ====  =",
@@ -499,12 +503,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int R(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *R(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=       ==",
             "=  ====  =",
             "=  ====  =",
@@ -527,13 +531,13 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
         
     }
     
-    int S(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *S(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "==      ==",
             "=  ====  =",
             "=  ====  =",
@@ -556,11 +560,11 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int T(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *T(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=        =",
             "====  ====",
             "====  ====",
@@ -583,11 +587,11 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int U(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *U(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=  ====  =",
             "=  ====  =",
             "=  ====  =",
@@ -610,11 +614,11 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int V(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *V(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=  ====  =",
             "=  ====  =",
             "=  ====  =",
@@ -637,12 +641,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int W(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "================",
+    string *W(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "================",
             "=  ====  ====  =",
             "=  ====  ====  =",
             "=  ====  ====  =",
@@ -665,13 +669,13 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
         
     }
     
-    int X(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *X(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=   ==   =",
             "==  ==  ==",
             "==  ==  ==",
@@ -694,13 +698,13 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
         
     }
     
-    int Y(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *Y(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=  ====  =",
             "=   ==   =",
             "==  ==  ==",
@@ -723,12 +727,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int Z(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *Z(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "=        =",
             "======  ==",
             "=====  ===",
@@ -751,12 +755,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int _0(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==============",
+    string *_0(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==============",
             "====      ====",
             "===   ==   ===",
             "===  ====  ===",
@@ -779,12 +783,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int _1(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "==========",
+    string *_1(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "==========",
             "====  ====",
             "===   ====",
             "====  ====",
@@ -807,12 +811,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int _2(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "===========",
+    string *_2(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "===========",
             "====   ====",
             "==   =   ==",
             "=   ===   =",
@@ -835,12 +839,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int _3(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "===========",
+    string *_3(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "===========",
             "====   ====",
             "==   =   ==",
             "=   ===   =",
@@ -863,12 +867,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int _4(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "===========",
+    string *_4(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "===========",
             "======  ===",
             "=====   ===",
             "====    ===",
@@ -891,12 +895,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int _5(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "===========",
+    string *_5(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "===========",
             "=         =",
             "=  ========",
             "=  ========",
@@ -919,12 +923,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int _6(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "===========",
+    string *_6(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "===========",
             "==       ==",
             "=  =====  =",
             "=  ========",
@@ -947,11 +951,11 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int _7(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "===========",
+    string *_7(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "===========",
             "=         =",
             "=  =====  =",
             "=======  ==",
@@ -974,12 +978,12 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
     
-    int _8(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "===========",
+    string *_8(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "===========",
             "===     ===",
             "==  ===  ==",
             "=  =====  =",
@@ -1002,11 +1006,11 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
     }
     
-    int _9(int seq_vertical, int seq_horizontal, bool print, bool isHorizontal){
-        string array[] = {  "===========",
+    string *_9(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+       static string array[] = {  "===========",
             "===     ===",
             "==  ===   =",
             "=  =====  =",
@@ -1028,21 +1032,24 @@ public:
         }
         
         int widthSize = array[0].size(); //widthSize start counting from 1.
-        return widthSize-1;
+        return array;
         
     }
 };
 
 
 int main(){
-    x=35;
+    charStager();
+    x=2;
     y=5;
+    directionInput = HORIZONTAL_RIGHT;
     while (true){
         render();
         coordinateManager();
         usleep(1000000);
     }
-   
+    //inputHandler();
+    
 }
 
 void coordinateManager(){
@@ -1074,15 +1081,124 @@ void coordinateManager(){
     }
 }
 
+void inputHandler(){
+
+    cout << "Please enter the words that you would like to display (less than 25 characters): ";
+    getline (cin, charList);
+    //cout << toupper(charList);
+    cout << endl;
+
+    cout << "Please enter the anchor dot for X axis:";
+    cin >> x;
+    cout << endl;
+
+    cout << "Please enter the anchor dot for Y axis:";
+    cin >> y;
+    cout << endl;
+
+    
+    system("clear");
+    
+}
+
+string *charStager(){
+    charArts charObj;
+    static bool isCodeExecuted = false;
+    static string stagedChar[11];
+    string *ptr;
+    for (int i = 0; i < charList.size(); i++) {
+        if(charList[i]=='A'){
+            ptr = charObj.A();
+        } else if(charList[i]=='B'){
+            ptr = charObj.B();
+        } else if(charList[i]=='C'){
+            ptr = charObj.C();
+        } else if(charList[i]=='D'){
+            ptr = charObj.D();
+        } else if(charList[i]=='E'){
+            ptr = charObj.E();
+        } else if(charList[i]=='F'){
+            ptr = charObj.F();
+        } else if(charList[i]=='G'){
+            ptr = charObj.G();
+        } else if(charList[i]=='H'){
+            ptr = charObj.H();
+        } else if(charList[i]=='I'){
+            ptr = charObj.I();
+        } else if(charList[i]=='J'){
+            ptr = charObj.J();
+        } else if(charList[i]=='K'){
+            ptr = charObj.K();
+        } else if(charList[i]=='L'){
+            ptr = charObj.L();
+        } else if(charList[i]=='M'){
+            ptr = charObj.N();
+        } else if(charList[i]=='O'){
+            ptr = charObj.O();
+        } else if(charList[i]=='P'){
+            ptr = charObj.P();
+        } else if(charList[i]=='Q'){
+            ptr = charObj.Q();
+        } else if(charList[i]=='R'){
+            ptr = charObj.R();
+        } else if(charList[i]=='S'){
+            ptr = charObj.S();
+        } else if(charList[i]=='T'){
+            ptr = charObj.T();
+        } else if(charList[i]=='U'){
+            ptr = charObj.V();
+        } else if(charList[i]=='W'){
+            ptr = charObj.W();
+        } else if(charList[i]=='X'){
+            ptr = charObj.X();
+        } else if(charList[i]=='Y'){
+            ptr = charObj.Y();
+        } else if(charList[i]=='Z'){
+            ptr = charObj.Z();
+        } else if(charList[i]=='0'){
+            ptr = charObj._0();
+        } else if(charList[i]=='1'){
+            ptr = charObj._1();
+        } else if(charList[i]=='2'){
+            ptr = charObj._2();
+        } else if(charList[i]=='3'){
+            ptr = charObj._3();
+        } else if(charList[i]=='4'){
+            ptr = charObj._4();
+        } else if(charList[i]=='5'){
+            ptr = charObj._5();
+        } else if(charList[i]=='6'){
+            ptr = charObj._6();
+        } else if(charList[i]=='7'){
+            ptr = charObj._7();
+        } else if(charList[i]=='8'){
+            ptr = charObj._8();
+        } else if(charList[i]=='9'){
+            ptr = charObj._9();
+        }
+        if(!isCodeExecuted){
+            for (int e = 0; e < 11; e++) {
+                stagedChar[e].append(*(ptr+e));
+                
+            }
+        }
+    }
+    isCodeExecuted = true;
+    return stagedChar;
+}
+
 void render(){
     charArts charObj;
+    string *ptr_stagedChar = charStager(); // store the address of stagedChar array from charStager()
     system("clear"); // MARK: check OS here
     static int skipWidth = 0; // MARK: spaces needs to be deleted
-    int charWidth = charObj.W(0, 0, false, false); // MARK: total width of char
+    int charWidth = (*ptr_stagedChar).size()-1; // MARK: total width of char
     static bool notFinishPrinting = false;
-    static bool isWrapAroundEnabled = false; // MARK: enable or disable wrap around effect for X axis
+    static bool isWrapAroundEnabled = true; // MARK: enable or disable wrap around effect for X axis
     static int printedHeight = 0;
     static int printedWidth = 0;
+    const double percent = 50.0;
+    double displayedPercentage = 0.00;
     int remainingSpacesX = (width-1) - x; // MARK: remaining printing spaces on X axis based on anchor dot
     int skipWidth_debug = 0; // MARK: DEBUGGING PURPOSES
     bool notFinishPrinting_debug;
@@ -1109,12 +1225,14 @@ void render(){
                 notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
                 if (printedHeight <= 10 && notFinishPrinting){
                     notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
-                        
+                    //displayedPercentage = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
                     if((remainingSpacesX < charWidth)){ // MARK: when x < 9
                        if(c==1 && remainingSpacesX >=0 && isWrapAroundEnabled){
                             int test = 0; // MARK: NEED TO BE OPTIMIZED, cause skipWidth did not start count from 0
+                        
                             for(int contPrintWidth = remainingSpacesX+1; contPrintWidth <= charWidth; contPrintWidth++){
-                                charObj.W(printedHeight, contPrintWidth, true, true);
+                                
+                                cout << (*(ptr_stagedChar+printedHeight)).at(contPrintWidth);
                                 
                                 if(test !=0){ // MARK: to make skipWidth start counting from 0
                                     skipWidth++;
@@ -1125,15 +1243,16 @@ void render(){
                         }
                         if((k==y && c==x) || (c==x && notFinishPrinting)){
                             for(printedWidth = 0; printedWidth <= remainingSpacesX; printedWidth++){
-                                charObj.W(printedHeight, printedWidth, true, true);
+                                cout << (*(ptr_stagedChar+printedHeight)).at(printedWidth);
                                 skipWidth = printedWidth;
                                 
                             }
                         }
+                        
                         skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
     
                     } else if(remainingSpacesX >= charWidth){ // MARK: when x >=9
-                        charObj.W(printedHeight, 0, true, false);
+                        cout << *(ptr_stagedChar+printedHeight);
                         skipWidth = charWidth;
                         skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
                     }
@@ -1150,6 +1269,7 @@ void render(){
                 }
                 
             } else{ // MARK: if not match x && y value, just print blank space
+                
                 if (skipWidth <= charWidth && skipWidth >0){
                     skipWidth--;
                 } else{
@@ -1182,6 +1302,7 @@ void render(){
     cout << "printedHeight = " << printedHeight << endl;
     cout << "printedWidth = " << printedWidth << endl;
     cout << "remainingSpacesX = " << remainingSpacesX << endl;
+    cout << "displayPercentage = " << displayedPercentage << endl;
     cout << "******************* DEBUG *******************" << endl;
     
 }
