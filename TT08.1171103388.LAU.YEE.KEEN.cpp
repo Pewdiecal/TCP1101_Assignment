@@ -21,13 +21,13 @@
 #endif
 using namespace std;
 
-const int width = 40;
+const int width = 80;
 const int height = 20;
 int x, y;
 bool isPaused = false;
 enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN};
 int directionInput;
-string charList = "01";
+string charList;
 void render();
 void coordinateManager(bool pauseStats);
 string *charStager();
@@ -1040,14 +1040,12 @@ public:
 
 
 int main(){
+    inputHandler();
     charStager();
-    x=2;
-    y=5;
-    directionInput = HORIZONTAL_LEFT;
     while (true){
         render();
         coordinateManager(isPaused);
-        usleep(1000000);
+        usleep(10000);
     }
     //inputHandler();
     
@@ -1073,7 +1071,12 @@ void coordinateManager(bool pauseStats){
         }
     }
     if (x > width-1 || x < 1){
-        isPaused = true;
+        if(x<1){
+            isPaused = true;
+        } else if(x > width-1){
+            x=1;
+        }
+        
     } else if (y < 0 || y >height){
         if(y<0){
             y = height-1;
@@ -1085,10 +1088,9 @@ void coordinateManager(bool pauseStats){
 }
 
 void inputHandler(){
-
-    cout << "Please enter the words that you would like to display (less than 25 characters): ";
+    system("clear");
+    cout << "Please enter the words that you would like to display: ";
     getline (cin, charList);
-    //cout << toupper(charList);
     cout << endl;
 
     cout << "Please enter the anchor dot for X axis:";
@@ -1099,6 +1101,9 @@ void inputHandler(){
     cin >> y;
     cout << endl;
 
+    cout << "0.HORIZONTAL_LEFT, 1.HORIZONTAL_RIGHT, 2.VERTICAL_UP, 3.VERTICAL_DOWN :";
+    cin >> directionInput;
+    cout << endl;
     
     system("clear");
     
@@ -1197,7 +1202,7 @@ void render(){
     static int skipWidth = 0; // MARK: spaces needs to be deleted
     int charWidth = (*ptr_stagedChar).size()-1; // MARK: total width of char
     static bool notFinishPrinting = false;
-    static bool isWrapAroundEnabled = true; // MARK: enable or disable wrap around effect for X axis
+    static bool isWrapAroundEnabled = false; // MARK: enable or disable wrap around effect for X axis
     static int printedHeight = 0;
     static int printedWidth = 0;
     const double percent = 50.0;
@@ -1205,7 +1210,9 @@ void render(){
     int remainingSpacesX = (width-1) - x; // MARK: remaining printing spaces on X axis based on anchor dot
     int skipWidth_debug = 0; // MARK: DEBUGGING PURPOSES
     bool notFinishPrinting_debug;
-    
+    static int widthMinus = 1;
+    static int widthAdd = 39;
+    static bool isRunning = false;
     for(int i = 0; i < width + 1; i++ ){ // MARK: render top width
         cout << "-";
     }
@@ -1215,14 +1222,20 @@ void render(){
         notFinishPrinting = true;
         printedHeight = (height-y); // MARK: will be = 11 when y = 9, Thus, cause if (printedHeight <= 10 && notFinishPrinting) return false.
     }
+    if((charWidth > width) && !isRunning){
+        widthAdd = width-1;
+        isRunning = true;
+    }else if((charWidth < width) && !isRunning){
+        widthAdd = charWidth;
+        isRunning = true;
+    }
     
     for(int k = 0; k < height; k++){ // MARK: render height
         for(int c = 0; c < width; c++){ // MARK: render horizontal space
-            
             if (c==0){ // MARK: if is 1st dot print * to build border.
                 cout << "*" ;
                 
-            } else if(((k==y && c==1 && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && remainingSpacesX < charWidth && isWrapAroundEnabled) || (isPaused && c==1) )){ // MARK: if not 1st dot, check if the current coordinate match x && y value to print char.
+            } else if(((k==y && c==1 && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && isPaused && c==1) || (isPaused && c==1 && notFinishPrinting) )){ // MARK: if not 1st dot, check if the current coordinate match x && y value to print char.
                 
                 notFinishPrinting = true; // BUG: = true when x==40;
                 notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
@@ -1244,7 +1257,8 @@ void render(){
                             }
                             
                         }
-                        if((k==y && c==x) || (c==x && notFinishPrinting)){
+                        
+                        if( ((k==y && c==x) || (c==x && notFinishPrinting)) && !isPaused){
                             for(printedWidth = 0; printedWidth <= remainingSpacesX; printedWidth++){
                                 cout << (*(ptr_stagedChar+printedHeight)).at(printedWidth);
                                 skipWidth = printedWidth;
@@ -1254,17 +1268,23 @@ void render(){
                         
                         skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
     
-                    } else if(remainingSpacesX >= charWidth){ // MARK: when x >=9
+                    } else if((remainingSpacesX >= charWidth) && !isPaused){ // MARK: when x >=9
                         cout << *(ptr_stagedChar+printedHeight);
                         skipWidth = charWidth;
                         skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
-                    } else if(isPaused && c==1){
-                        for(int width = 1; width <= charWidth; i++){
-                            cout << (*(ptr_stagedChar+printedHeight)).at(width);
-                        }
+                        
                     }
                     
-                    if((k==y && c==x) || (c==x && notFinishPrinting)){
+                    if(notFinishPrinting && isPaused && c==1){
+                        for(int width=widthMinus; width <= widthAdd ; width++){
+                            cout << (*(ptr_stagedChar+printedHeight)).at(width);
+                                skipWidth = width-widthMinus;
+                            
+                        }
+                        
+                    }
+                    
+                    if((k==y && c==x) || (c==x && notFinishPrinting) || (isPaused && c==1 && notFinishPrinting) || (k==y && isPaused && c==1)){
                         printedHeight ++;
                     }
                     
@@ -1272,11 +1292,24 @@ void render(){
                     printedHeight = 0;
                     cout << " ";
                     notFinishPrinting = false;
+                    if(isPaused && (widthMinus <= charWidth)){
+                        widthMinus++;
+                        
+                    }
+                    if(isPaused&&widthMinus >charWidth){
+                        x=width-1;
+                        isPaused = false;
+                        isRunning = false;
+                        widthMinus = 1;
+                        
+                    }
+                    if(isPaused && (widthAdd < charWidth)){
+                        widthAdd++;
+                    }
                     notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
                 }
                 
             } else{ // MARK: if not match x && y value, just print blank space
-                
                 if (skipWidth <= charWidth && skipWidth >0){
                     skipWidth--;
                 } else{
@@ -1299,7 +1332,7 @@ void render(){
     }
     cout << endl;
     
-    cout << endl << endl;
+    /*cout << endl << endl;
     cout << "******************* DEBUG *******************" << endl;
     cout << "Current X = " << x << endl;
     cout << "Current Y = " << y+1 << endl;
@@ -1310,7 +1343,6 @@ void render(){
     cout << "printedWidth = " << printedWidth << endl;
     cout << "remainingSpacesX = " << remainingSpacesX << endl;
     cout << "displayPercentage = " << displayedPercentage << endl;
-    cout << "******************* DEBUG *******************" << endl;
-    
+    cout << "******************* DEBUG *******************" << endl;*/
 }
 
