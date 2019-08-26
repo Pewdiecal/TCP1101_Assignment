@@ -1036,6 +1036,29 @@ public:
         return array;
         
     }
+    
+    string *_SPACE(int seq_vertical = 0, int seq_horizontal = 0, bool print = false, bool isHorizontal = false){
+        static string array[11];
+        
+        for(int i=0; i < 11; i++){
+            
+            array[i] = "   ";
+        }
+        
+        if(print){
+            
+            if(isHorizontal){
+                cout << array[seq_vertical].at(seq_horizontal);
+            }else{
+                cout << array[seq_vertical];
+            }
+            
+        }
+        
+        int widthSize = array[0].size(); //widthSize start counting from 1.
+        return array;
+        
+    }
 };
 
 
@@ -1045,7 +1068,7 @@ int main(){
     while (true){
         render();
         coordinateManager(isPaused);
-        usleep(10000);
+        usleep(100000);
     }
     
 }
@@ -1139,7 +1162,7 @@ string *charStager(){
         } else if(charList[i]=='L'){
             ptr = charObj.L();
         } else if(charList[i]=='M'){
-            ptr = charObj.N();
+            ptr = charObj.M();
         } else if(charList[i]=='O'){
             ptr = charObj.O();
         } else if(charList[i]=='P'){
@@ -1182,6 +1205,10 @@ string *charStager(){
             ptr = charObj._8();
         } else if(charList[i]=='9'){
             ptr = charObj._9();
+        } else if(charList[i]==' '){
+            ptr = charObj._SPACE();
+        } else if(charList[i]=='N'){
+            ptr = charObj.N();
         }
         if(!isCodeExecuted){
             for (int e = 0; e < 11; e++) {
@@ -1331,7 +1358,7 @@ void render(){
     }
     cout << endl;
     
-    /*cout << endl << endl;
+    cout << endl << endl;
     cout << "******************* DEBUG *******************" << endl;
     cout << "Current X = " << x << endl;
     cout << "Current Y = " << y+1 << endl;
@@ -1342,6 +1369,6 @@ void render(){
     cout << "printedWidth = " << printedWidth << endl;
     cout << "remainingSpacesX = " << remainingSpacesX << endl;
     cout << "displayPercentage = " << displayedPercentage << endl;
-    cout << "******************* DEBUG *******************" << endl;*/
+    cout << "******************* DEBUG *******************" << endl;
 }
 
