@@ -1047,7 +1047,6 @@ int main(){
         coordinateManager(isPaused);
         usleep(10000);
     }
-    //inputHandler();
     
 }
 
@@ -1101,7 +1100,7 @@ void inputHandler(){
     cin >> y;
     cout << endl;
 
-    cout << "0.HORIZONTAL_LEFT, 1.HORIZONTAL_RIGHT, 2.VERTICAL_UP, 3.VERTICAL_DOWN :";
+    cout << "0.HORIZONTAL_LEFT, 1.HORIZONTAL_RIGHT, 2.VERTICAL_UP, 3.VERTICAL_DOWN, 4.STATIC :";
     cin >> directionInput;
     cout << endl;
     
