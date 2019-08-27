@@ -35,6 +35,7 @@ string charList;
 string *charStager();
 void inputHandler();
 void delay();
+void clear();
 
 
 class charArts {
@@ -1121,7 +1122,8 @@ void coordinateManager(bool pauseStats){
 
 void inputHandler(){
 
-    system("clear");
+    clear();
+
     cout << "Please enter the words that you would like to display: ";
     getline (cin, charList);
     cout << endl;
@@ -1133,7 +1135,7 @@ void inputHandler(){
 
     cout << "Please enter the anchor dot for Y axis:";
     cin >> y;
-    y=(height)-y;
+    y=((height)-y)-1;
     cout << endl;
 
     cout << "0.HORIZONTAL_LEFT, 1.HORIZONTAL_RIGHT, 2.VERTICAL_UP, 3.VERTICAL_DOWN, 4.STATIC :";
@@ -1151,7 +1153,7 @@ void inputHandler(){
         cout << endl;
     }
     
-    system("clear");
+    clear();
     
 }
 
@@ -1289,10 +1291,19 @@ void delay(){
     #endif
 }
 
+void clear(){
+    #ifdef __APPLE__
+    system("clear");
+    #endif
+    #ifdef _WIN32
+    system("cls");
+    #endif
+}
+
 void render(){
     charArts charObj;
     string *ptr_stagedChar = charStager(); // store the address of stagedChar array from charStager()
-    system("clear"); // MARK: check OS here
+    clear(); // MARK: check OS here
     static int skipWidth = 0; // MARK: spaces needs to be deleted
     int charWidth = (*ptr_stagedChar).size()-1; // MARK: total width of char
     static bool notFinishPrinting = false;
@@ -1389,7 +1400,9 @@ void render(){
                     notFinishPrinting = false;
                     if(isPaused && (widthMinus <= charWidth)){
                         widthMinus++;
-                        
+                        if(y==1 || y==10){
+                            cout << widthMinus;
+                        }
                     }
                     if(isPaused && (widthMinus > charWidth)){
                         x=width;
