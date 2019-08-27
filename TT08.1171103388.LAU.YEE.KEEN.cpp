@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <string>
-#include <locale>
+#include <cctype>
 #ifdef __APPLE__
 #include <unistd.h>
 #endif
@@ -21,17 +21,20 @@
 #endif
 using namespace std;
 
-const int width = 80;
+const int width = 41;
 const int height = 20;
 int x, y;
 bool isPaused = false;
 enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN};
 int directionInput;
-string charList;
+int timeSteps = -1;
+int scrollingSpeed = 1;
 void render();
 void coordinateManager(bool pauseStats);
+string charList;
 string *charStager();
 void inputHandler();
+void delay();
 
 
 class charArts {
@@ -1065,10 +1068,17 @@ public:
 int main(){
     inputHandler();
     charStager();
-    while (true){
+    bool stopNow = false;
+    while (!stopNow){
         render();
         coordinateManager(isPaused);
-        usleep(100000);
+        if(timeSteps >=0){
+            if(timeSteps==0){
+                stopNow = true;
+            }
+            timeSteps--;
+        }
+        delay();
     }
     
 }
@@ -1110,6 +1120,7 @@ void coordinateManager(bool pauseStats){
 }
 
 void inputHandler(){
+
     system("clear");
     cout << "Please enter the words that you would like to display: ";
     getline (cin, charList);
@@ -1117,15 +1128,28 @@ void inputHandler(){
 
     cout << "Please enter the anchor dot for X axis:";
     cin >> x;
+    x=x+1;
     cout << endl;
 
     cout << "Please enter the anchor dot for Y axis:";
     cin >> y;
+    y=(height)-y;
     cout << endl;
 
     cout << "0.HORIZONTAL_LEFT, 1.HORIZONTAL_RIGHT, 2.VERTICAL_UP, 3.VERTICAL_DOWN, 4.STATIC :";
     cin >> directionInput;
     cout << endl;
+    
+    if(directionInput <= 3){
+        cout << "Please enter time steps, (Enter -1 for unlimited time stpes):";
+        cin >> timeSteps;
+        cout << endl;
+        
+        cout << "1.SLOWEST 2.VERY_SLOW 3.NOT_VERY_SLOW 4.MEDIUM 5.NOT_VERY_FAST 6.FASTER 7.VERY_FAST 8.FASTEST 9.SUPER_FAST 10.ASAP" << endl;
+        cout << "Please enter the scrolling speed:";
+        cin >> scrollingSpeed;
+        cout << endl;
+    }
     
     system("clear");
     
@@ -1137,77 +1161,77 @@ string *charStager(){
     static string stagedChar[11];
     string *ptr;
     for (int i = 0; i < charList.size(); i++) {
-        if(charList[i]=='A'){
+        if(toupper(charList[i])=='A'){
             ptr = charObj.A();
-        } else if(charList[i]=='B'){
+        } else if(toupper(charList[i])=='B'){
             ptr = charObj.B();
-        } else if(charList[i]=='C'){
+        } else if(toupper(charList[i])=='C'){
             ptr = charObj.C();
-        } else if(charList[i]=='D'){
+        } else if(toupper(charList[i])=='D'){
             ptr = charObj.D();
-        } else if(charList[i]=='E'){
+        } else if(toupper(charList[i])=='E'){
             ptr = charObj.E();
-        } else if(charList[i]=='F'){
+        } else if(toupper(charList[i])=='F'){
             ptr = charObj.F();
-        } else if(charList[i]=='G'){
+        } else if(toupper(charList[i])=='G'){
             ptr = charObj.G();
-        } else if(charList[i]=='H'){
+        } else if(toupper(charList[i])=='H'){
             ptr = charObj.H();
-        } else if(charList[i]=='I'){
+        } else if(toupper(charList[i])=='I'){
             ptr = charObj.I();
-        } else if(charList[i]=='J'){
+        } else if(toupper(charList[i])=='J'){
             ptr = charObj.J();
-        } else if(charList[i]=='K'){
+        } else if(toupper(charList[i])=='K'){
             ptr = charObj.K();
-        } else if(charList[i]=='L'){
+        } else if(toupper(charList[i])=='L'){
             ptr = charObj.L();
-        } else if(charList[i]=='M'){
+        } else if(toupper(charList[i])=='M'){
             ptr = charObj.M();
-        } else if(charList[i]=='O'){
+        } else if(toupper(charList[i])=='O'){
             ptr = charObj.O();
-        } else if(charList[i]=='P'){
+        } else if(toupper(charList[i])=='P'){
             ptr = charObj.P();
-        } else if(charList[i]=='Q'){
+        } else if(toupper(charList[i])=='Q'){
             ptr = charObj.Q();
-        } else if(charList[i]=='R'){
+        } else if(toupper(charList[i])=='R'){
             ptr = charObj.R();
-        } else if(charList[i]=='S'){
+        } else if(toupper(charList[i])=='S'){
             ptr = charObj.S();
-        } else if(charList[i]=='T'){
+        } else if(toupper(charList[i])=='T'){
             ptr = charObj.T();
-        } else if(charList[i]=='U'){
+        } else if(toupper(charList[i])=='U'){
             ptr = charObj.V();
-        } else if(charList[i]=='W'){
+        } else if(toupper(charList[i])=='W'){
             ptr = charObj.W();
-        } else if(charList[i]=='X'){
+        } else if(toupper(charList[i])=='X'){
             ptr = charObj.X();
-        } else if(charList[i]=='Y'){
+        } else if(toupper(charList[i])=='Y'){
             ptr = charObj.Y();
-        } else if(charList[i]=='Z'){
+        } else if(toupper(charList[i])=='Z'){
             ptr = charObj.Z();
-        } else if(charList[i]=='0'){
+        } else if(toupper(charList[i])=='0'){
             ptr = charObj._0();
-        } else if(charList[i]=='1'){
+        } else if(toupper(charList[i])=='1'){
             ptr = charObj._1();
-        } else if(charList[i]=='2'){
+        } else if(toupper(charList[i])=='2'){
             ptr = charObj._2();
-        } else if(charList[i]=='3'){
+        } else if(toupper(charList[i])=='3'){
             ptr = charObj._3();
-        } else if(charList[i]=='4'){
+        } else if(toupper(charList[i])=='4'){
             ptr = charObj._4();
-        } else if(charList[i]=='5'){
+        } else if(toupper(charList[i])=='5'){
             ptr = charObj._5();
-        } else if(charList[i]=='6'){
+        } else if(toupper(charList[i])=='6'){
             ptr = charObj._6();
-        } else if(charList[i]=='7'){
+        } else if(toupper(charList[i])=='7'){
             ptr = charObj._7();
-        } else if(charList[i]=='8'){
+        } else if(toupper(charList[i])=='8'){
             ptr = charObj._8();
-        } else if(charList[i]=='9'){
+        } else if(toupper(charList[i])=='9'){
             ptr = charObj._9();
-        } else if(charList[i]==' '){
+        } else if(toupper(charList[i])==' '){
             ptr = charObj._SPACE();
-        } else if(charList[i]=='N'){
+        } else if(toupper(charList[i])=='N'){
             ptr = charObj.N();
         }
         if(!isCodeExecuted){
@@ -1219,6 +1243,50 @@ string *charStager(){
     }
     isCodeExecuted = true;
     return stagedChar;
+}
+
+void delay(){
+    int microSec;
+    switch (scrollingSpeed) {
+        case 1:
+            microSec = 1000000;
+            break;
+        case 2:
+            microSec = 500000;
+            break;
+        case 3:
+            microSec = 100000;
+            break;
+        case 4:
+            microSec = 50000;
+            break;
+        case 5:
+            microSec = 10000;
+            break;
+        case 6:
+            microSec = 5000;
+            break;
+        case 7:
+            microSec = 1000;
+            break;
+        case 8:
+            microSec = 500;
+            break;
+        case 9:
+            microSec = 100;
+            break;
+        case 10:
+            microSec = 10;
+            break;
+        default:
+            break;
+    }
+    #ifdef __APPLE__
+        usleep(microSec);
+    #endif
+    #ifdef _WIN32
+        Sleep(microSec*1000);
+    #endif
 }
 
 void render(){
@@ -1237,7 +1305,7 @@ void render(){
     int skipWidth_debug = 0; // MARK: DEBUGGING PURPOSES
     bool notFinishPrinting_debug;
     static int widthMinus = 1;
-    static int widthAdd = 39;
+    static int widthAdd = width-2;
     static bool isRunning = false;
     for(int i = 0; i < width + 1; i++ ){ // MARK: render top width
         cout << "-";
@@ -1284,7 +1352,7 @@ void render(){
                             
                         }
                         
-                        if( ((k==y && c==x) || (c==x && notFinishPrinting)) && !isPaused){
+                        if(((k==y && c==x) || (c==x && notFinishPrinting)) && !isPaused){
                             for(printedWidth = 0; printedWidth <= remainingSpacesX; printedWidth++){
                                 cout << (*(ptr_stagedChar+printedHeight)).at(printedWidth);
                                 skipWidth = printedWidth;
@@ -1295,6 +1363,7 @@ void render(){
                         skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
     
                     } else if((remainingSpacesX >= charWidth) && !isPaused){ // MARK: when x >=9
+                        displayedPercentage = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
                         cout << *(ptr_stagedChar+printedHeight);
                         skipWidth = charWidth;
                         skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
@@ -1304,7 +1373,7 @@ void render(){
                     if(notFinishPrinting && isPaused && c==1){
                         for(int width=widthMinus; width <= widthAdd ; width++){
                             cout << (*(ptr_stagedChar+printedHeight)).at(width);
-                                skipWidth = width-widthMinus;
+                            skipWidth = width-widthMinus;
                             
                         }
                         
@@ -1322,8 +1391,8 @@ void render(){
                         widthMinus++;
                         
                     }
-                    if(isPaused&&widthMinus >charWidth){
-                        x=width-1;
+                    if(isPaused && (widthMinus > charWidth)){
+                        x=width;
                         isPaused = false;
                         isRunning = false;
                         widthMinus = 1;
