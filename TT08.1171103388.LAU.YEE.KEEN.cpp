@@ -10,10 +10,12 @@
  Phone: 014-6099666
  **********|**********|**********/
 
+// All preprocessor codes
 #include <iostream>
 #include <string>
 #include <cctype>
 #include <iomanip>
+// check the OS version and include the header file that is compatible with the OS
 #ifdef __APPLE__
 #include <unistd.h>
 #endif
@@ -27,24 +29,24 @@ using namespace std;
 
 const int width = 41;
 const int height = 20;
-int x, y;
-bool isPaused = false;
-enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN};
-int directionInput;
-int timeSteps = -1;
-int scrollingSpeed = 1;
-void render();
-void coordinateManager(bool pauseStats);
+int x, y; //coordinates holder
+bool isPaused = false; //coordinate status
+enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN}; //direction input constant
+int directionInput; //direction input value holder
+int timeSteps = -1; //time steps value holder
+int scrollingSpeed = 1; //scrolling speed value holder
+void render(); //renders animation, characters on screen
+void coordinateManager(bool pauseStats); //calculates and manages the whole coordinates system
 string charList;
-string *charStager();
-void inputHandler();
+string *charStager(); //Staging function used to put char on stage
+void inputHandler(); //Handle user inputs
 void delay();
 void clear();
 
-class charArts {
+class charArts { // a class that holds all the characters arts details.
 public:
     
-    string *A(){
+    string *A(){ // function will return the address of the array that stores the drawing of char arts in list of strings
        static string array[] = {  "==========",
             "====  ====",
             "===    ===",
@@ -57,7 +59,7 @@ public:
             "=  ====  =",
             "==========" };
 
-        return array;
+        return array; //address of the array is returned
     }
     
     string *B(){
@@ -650,27 +652,28 @@ public:
     }
     
     string *SPACE(){
-        static string array[11];
+        static string array[11]; // Has size of 11
         
-        for(int i=0; i < 11; i++){
+        for(int i=0; i < 11; i++){ // use loop to store the spaces into array
             
-            array[i] = "   ";
+            array[i] = "   "; // each element of array will be stored with "   "(3 spaces)
         }
-        return array;
+        return array; // returns the address of the array
     }
 };
 
 
 int main(){
-    //splashScreen();
-    inputHandler();
-    charStager();
-    while (true){
+
+    inputHandler(); // will get the user input first
+    charStager(); // this function will store all the characters choosen by the user into an array
+    while (true){ // Infinite loop to keep the frame rendering
         render();
         coordinateManager(isPaused);
-        if(timeSteps >=0){
+        if(timeSteps >=0){ // to check the user actually want to stop the execution of the program by specifying a time steps
+            
             if(timeSteps==0){
-                break;
+                break; // terminate the infinite loop once time steps reaches 0
             }
             timeSteps--;
         }
@@ -680,8 +683,8 @@ int main(){
     
 }
 
-void coordinateManager(bool pauseStats){
-    if(!pauseStats){
+void coordinateManager(bool pauseStats){ // this func reponsible to calculate and manage the whole coordinate system in this program
+    if(!pauseStats){ // if the calculations of coordinate is not being paused, keep calculating the next value of the coordinates for the anchor dot
         switch (directionInput) {
             case HORIZONTAL_LEFT:
                 x--;
@@ -695,19 +698,21 @@ void coordinateManager(bool pauseStats){
             case VERTICAL_DOWN:
                 y++;
                 break;
-            default:
+            default: // movement will be static when user enter 4 in the direction input holder
                 break;
         }
     }
+    
+    // all of the coordinates value will be resetted to prevent it from getting -ve values or values that is more than the total width and height
     if (x > width-1 || x < 1){
-        if(x<1){
+        if(x<1){ // it will pause the coordinates when x < 1
             isPaused = true;
-        } else if(x > width-1){
+        } else if(x > width-1){ // reset x to 1 when x exceeds the total width value
             x=1;
         }
         
     } else if (y < 0 || y >height){
-        if(y<0){
+        if(y<0){ // it will reset the y coordinate value if y < 0
             y = height-1;
         } else if(y > height){
             y = 1;
@@ -716,7 +721,8 @@ void coordinateManager(bool pauseStats){
     }
 }
 
-void inputHandler(){
+
+void inputHandler(){ //this func responsible to ask and receive user inputs only
     
     cout << "Please enter the words that you would like to display: ";
     getline (cin, charList);
@@ -732,12 +738,12 @@ void inputHandler(){
     y=((height)-y)-1;
     cout << endl;
 
-    cout << "Please enter your scrolling speed" << endl;
+    cout << "Please enter your scrolling direction" << endl;
     cout << "0.HORIZONTAL_LEFT, 1.HORIZONTAL_RIGHT, 2.VERTICAL_UP, 3.VERTICAL_DOWN, 4.STATIC :";
     cin >> directionInput;
     cout << endl;
     
-    if(directionInput <= 3){
+    if(directionInput <= 3){ //if the user wants the scrolling effects (0.HORIZONTAL_LEFT, 1.HORIZONTAL_RIGHT, 2.VERTICAL_UP, 3.VERTICAL_DOWN), ask below questions
         cout << "Please enter time steps, (Enter -1 for unlimited time stpes):";
         cin >> timeSteps;
         cout << endl;
@@ -752,14 +758,16 @@ void inputHandler(){
     
 }
 
-string *charStager(){
-    charArts charObj;
-    static bool isCodeExecuted = false;
-    static string stagedChar[11];
-    string *ptr;
-    for (int i = 0; i < charList.size(); i++) {
-        if(toupper(charList[i])=='A'){
-            ptr = charObj.A();
+string *charStager(){ // this func responsible to read the user's inputted string from charList, and then convert it into char arts, then stores the char arts into a "staging" array
+    
+    charArts charObj; // charArts object
+    static bool isCodeExecuted = false; // to make sure that this func is already being executed at the very begining of the program
+    static string stagedChar[11]; // staging array
+    string *ptr; // string pointer
+    
+    for (int i = 0; i < charList.size(); i++){ // loop through every single char in charList to convert all char in to char arts
+        if(toupper(charList[i])=='A'){ // will convert all input to UPPERCASE first before checking it
+            ptr = charObj.A(); // pointer will point to the address of that specific array address returned by the charArts object
         } else if(toupper(charList[i])=='B'){
             ptr = charObj.B();
         } else if(toupper(charList[i])=='C'){
@@ -831,18 +839,19 @@ string *charStager(){
         } else if(toupper(charList[i])=='N'){
             ptr = charObj.N();
         }
-        if(!isCodeExecuted){
-            for (int e = 0; e < 11; e++) {
-                stagedChar[e].append(*(ptr+e));
-                
+        if(!isCodeExecuted){ // if this func is not being executed before, only then store all the element from the char arts array into the staging array.
+            
+            for (int e = 0; e < 11; e++) { // store the char arts array that has been pointed by ptr into the staging array
+                stagedChar[e].append(*(ptr+e)); // ptr will be dereferenced according to the address before being stored into the array
             }
         }
     }
-    isCodeExecuted = true;
-    return stagedChar;
+    
+    isCodeExecuted = true; // set to true once this func is being called and completed
+    return stagedChar; // return the stagedChar array address
 }
 
-void delay(){
+void delay(){ // to delay the refresh rate of each frame
     int microSec;
     switch (scrollingSpeed) {
         case 1:
@@ -878,6 +887,7 @@ void delay(){
         default:
             break;
     }
+    // Preprocessor code to check for OS version and substitute it with the correct calling function
     #ifdef __APPLE__
         usleep(microSec);
     #endif
@@ -886,7 +896,7 @@ void delay(){
     #endif
 }
 
-void clear(){
+void clear(){ // clear the previously rendered frame
     #ifdef __APPLE__
     system("clear");
     #endif
@@ -895,33 +905,33 @@ void clear(){
     #endif
 }
 
-void render(){
+void render(){ // this func responsible to render all the scenes including movement, char arts, and animations.
     
     charArts charObj;
-    string *ptr_stagedChar = charStager(); // store the address of stagedChar array from charStager()
-    static int skipWidth = 0; // MARK: spaces needs to be deleted
-    int charWidth = (*ptr_stagedChar).size()-1; // MARK: total width of char
-    static bool notFinishPrinting = false;
-    static bool isWrapAroundEnabled = false; // MARK: enable or disable wrap around effect for X axis
-    static int printedHeight = 0;
-    static int printedWidth = 0;
+    string *ptr_stagedChar = charStager(); // stores the address of stagedChar array from charStager()
+    static int skipWidth = 0; // spaces needs to be deleted
+    int charWidth = (*ptr_stagedChar).size()-1; // total size of string from a single element from stagedChar
+    static bool notFinishPrinting = false; // to check if the whole stagedChar array has finish printing or not
+    static bool isWrapAroundEnabled = false; // enable or disable wrap around effect for X axis
+    static int printedHeight = 0; // stores current printed element index from stagedChar
+    static int printedWidth = 0; // stores current size of string that has been printed from stagedChar
     const double percent = 50.0;
     double displayedPercentage = 0.00;
-    int remainingSpacesX = (width-1) - x; // MARK: remaining printing spaces on X axis based on anchor dot
-    int skipWidth_debug = 0; // MARK: DEBUGGING PURPOSES
-    bool notFinishPrinting_debug; // MARK: DEBUGGING PURPOSES
+    int remainingSpacesX = (width-1) - x; // calculate remaining spaces for printing on X axis based on anchor dot
+    int skipWidth_debug = 0; // DEBUGGING PURPOSES
+    bool notFinishPrinting_debug; // DEBUGGING PURPOSES
     static int widthMinus = 1;
     static int widthAdd = width-2;
     static bool isRunning = false;
     
-    for(int i = 0; i < width + 1; i++ ){ // MARK: render top width
+    for(int i = 0; i < width + 1; i++ ){ //  render top width
         cout << "#";
     }
     cout << endl;
     
-    if(((height-1)-y) <= 10){ // MARK: if char cannot finish print on 1st time start, print the remaining char at first. (VERTICAL USE)
+    if(((height-1)-y) <= 10){ //  if char cannot finish print on 1st time start, print the remaining char at first. (VERTICAL USE)
         notFinishPrinting = true;
-        printedHeight = (height-y); // MARK: will be = 11 when y = 9, Thus, cause if (printedHeight <= 10 && notFinishPrinting) return false.
+        printedHeight = (height-y); //  will be = 11 when y = 9, Thus, cause if (printedHeight <= 10 && notFinishPrinting) return false.
     }
     if((charWidth > width) && !isRunning){
         widthAdd = width-1;
@@ -931,28 +941,29 @@ void render(){
         isRunning = true;
     }
     
-    for(int k = 0; k < height; k++){ // MARK: render height
-        for(int c = 0; c < width; c++){ // MARK: render horizontal space
+    for(int k = 0; k < height; k++){ //  render height
+        for(int c = 0; c < width; c++){ //  render horizontal space
             
-            if (c==0){ // MARK: if is 1st dot print * to build border.
+            if (c==0){ //  if is 1st dot print * to build border.
                 cout << "#" ;
                 
-            } else if(((k==y && c==1 && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && isPaused && c==1) || (isPaused && c==1 && notFinishPrinting) )){ // MARK: if not 1st dot, check if the current coordinate match x && y value to print char.
+            } else if(((k==y && c==1 && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && isPaused && c==1) || (isPaused && c==1 && notFinishPrinting) )){
                 
                 notFinishPrinting = true;
-                notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
+                notFinishPrinting_debug = notFinishPrinting; //  DEBUGGING PURPOSES
                 if (printedHeight <= 10 && notFinishPrinting){
-                    notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
+                    notFinishPrinting_debug = notFinishPrinting; //  DEBUGGING PURPOSES
                     displayedPercentage = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
-                    if((remainingSpacesX < charWidth)){ // MARK: when x < 9
+                    
+                    if((remainingSpacesX < charWidth)){ // if not enough printing spaces for stagedChar
                        if(c==1 && remainingSpacesX >=0 && isWrapAroundEnabled){
-                            int test = 0; // MARK: NEED TO BE OPTIMIZED, cause skipWidth did not start count from 0
+                            int test = 0; //  NEED TO BE OPTIMIZED, cause skipWidth did not start count from 0
                         
                             for(int contPrintWidth = remainingSpacesX+1; contPrintWidth <= charWidth; contPrintWidth++){
                                 
                                 cout << (*(ptr_stagedChar+printedHeight)).at(contPrintWidth);
                                 
-                                if(test !=0){ // MARK: to make skipWidth start counting from 0
+                                if(test !=0){ //  to make skipWidth start counting from 0
                                     skipWidth++;
                                 }
                                 test++;
@@ -968,13 +979,13 @@ void render(){
                             }
                         }
                         
-                        skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
+                        skipWidth_debug = skipWidth; //  DEBUGGING PURPOSES
     
-                    } else if((remainingSpacesX >= charWidth) && !isPaused){ // MARK: when x >=9
+                    } else if((remainingSpacesX >= charWidth) && !isPaused){ //  when x >=9
                         displayedPercentage = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
                         cout << *(ptr_stagedChar+printedHeight);
                         skipWidth = charWidth;
-                        skipWidth_debug = skipWidth; // MARK: DEBUGGING PURPOSES
+                        skipWidth_debug = skipWidth; //  DEBUGGING PURPOSES
                         
                     }
                     
@@ -1011,7 +1022,7 @@ void render(){
                     if(isPaused && (widthAdd < charWidth)){
                         widthAdd++;
                     }
-                    notFinishPrinting_debug = notFinishPrinting; // MARK: DEBUGGING PURPOSES
+                    notFinishPrinting_debug = notFinishPrinting; //  DEBUGGING PURPOSES
                 }
                 
             } else{ // if not match x && y value, just print blank space
@@ -1023,16 +1034,16 @@ void render(){
                 
             }
             
-            if (c == width - 1){ // MARK: print * when width - 1 = 40
+            if (c == width - 1){ //  print * when width - 1 = 40
                 cout << "#" ;
             }
             
         }
         cout << endl;
-         
+        
     }
     
-    for(int i = 0; i < width + 1; i++ ){ // MARK: render bottom border width
+    for(int i = 0; i < width + 1; i++ ){ //  render bottom border width
         cout << "#";
     }
     cout << endl;
