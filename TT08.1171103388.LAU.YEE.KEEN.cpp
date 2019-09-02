@@ -14,7 +14,6 @@
 #include <string>
 #include <cctype>
 #include <iomanip>
-#include <exception>
 #ifdef __APPLE__
 #include <unistd.h>
 #endif
@@ -41,8 +40,6 @@ string *charStager();
 void inputHandler();
 void delay();
 void clear();
-void splashScreen();
-void animationDelay(int ms = 100000);
 
 class charArts {
 public:
@@ -665,7 +662,7 @@ public:
 
 
 int main(){
-    splashScreen();
+    //splashScreen();
     inputHandler();
     charStager();
     while (true){
@@ -918,7 +915,7 @@ void render(){
     static bool isRunning = false;
     
     for(int i = 0; i < width + 1; i++ ){ // MARK: render top width
-        cout << "█";
+        cout << "#";
     }
     cout << endl;
     
@@ -938,7 +935,7 @@ void render(){
         for(int c = 0; c < width; c++){ // MARK: render horizontal space
             
             if (c==0){ // MARK: if is 1st dot print * to build border.
-                cout << "█" ;
+                cout << "#" ;
                 
             } else if(((k==y && c==1 && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && isPaused && c==1) || (isPaused && c==1 && notFinishPrinting) )){ // MARK: if not 1st dot, check if the current coordinate match x && y value to print char.
                 
@@ -1027,7 +1024,7 @@ void render(){
             }
             
             if (c == width - 1){ // MARK: print * when width - 1 = 40
-                cout << "█" ;
+                cout << "#" ;
             }
             
         }
@@ -1036,125 +1033,9 @@ void render(){
     }
     
     for(int i = 0; i < width + 1; i++ ){ // MARK: render bottom border width
-        cout << "█";
+        cout << "#";
     }
-    cout << endl;
-    
-    cout << endl << endl;
-    cout << "******************* DEBUG *******************" << endl;
-    cout << "Current X = " << x << endl;
-    cout << "Current Y = " << y+1 << endl;
-    cout << "skipWidth = " << skipWidth_debug << endl;
-    cout << "charWidth = " << charWidth << endl;
-    cout << "notFinishPrinting = " << notFinishPrinting << endl;
-    cout << "printedHeight = " << printedHeight << endl;
-    cout << "printedWidth = " << printedWidth << endl;
-    cout << "remainingSpacesX = " << remainingSpacesX << endl;
-    cout << "displayPercentage = " << displayedPercentage << endl;
-    cout << "******************* DEBUG *******************" << endl;
-    
-    
-}
-void splashScreen(){
-    #ifdef _WIN32
-        system("color a");
-    #endif
-    clear();
-    
-    cout << "                                           ████████████████████" << endl;
-    animationDelay();
-    cout << "                                           █        12        █" << endl;
-    animationDelay();
-    cout << "                                           █        █         █" << endl;
-    animationDelay();
-    cout << "                                           █        █         █" << endl;
-    animationDelay();
-    cout << "                                           █9       █████    3█" << endl;
-    animationDelay();
-    cout << "                                           █                  █" << endl;
-    animationDelay();
-    cout << "                                           █                  █" << endl;
-    animationDelay();
-    cout << "                                           █        6         █" << endl;
-    animationDelay();
-    cout << "                                           ████████████████████" << endl;
-    cout << endl << endl;
-    animationDelay();
-    
-    cout << "               ██╗███╗   ██╗██╗████████╗██╗ █████╗ ██╗     ██╗███████╗██╗███╗   ██╗ ██████╗                " << endl;
-    animationDelay();
-    cout << "               ██║████╗  ██║██║╚══██╔══╝██║██╔══██╗██║     ██║╚══███╔╝██║████╗  ██║██╔════╝                " << endl;
-    animationDelay();
-    cout << "               ██║██╔██╗ ██║██║   ██║   ██║███████║██║     ██║  ███╔╝ ██║██╔██╗ ██║██║  ███╗               " << endl;
-    animationDelay();
-    cout << "               ██║██║╚██╗██║██║   ██║   ██║██╔══██║██║     ██║ ███╔╝  ██║██║╚██╗██║██║   ██║               " << endl;
-    animationDelay();
-    cout << "               ██║██║ ╚████║██║   ██║   ██║██║  ██║███████╗██║███████╗██║██║ ╚████║╚██████╔╝██╗██╗██╗              " << endl;
-    cout << "               ╚═╝╚═╝  ╚═══╝╚═╝   ╚═╝   ╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝╚═╝╚═╝              "<< endl;
-    cout << "                                               PLEASE WAIT..." << endl;
-    animationDelay();
-    for(int i=0; i<=55; i++){
-        cout << "█ ";
-        fflush(stdout);
-        animationDelay(10999);
-    }
-    clear();
-    
-    cout << "                      *                                                   *" << endl;
-    animationDelay();
-    cout << "                     *                                                     *" << endl;
-    animationDelay();
-    cout << "                   **                                                       **" << endl;
-    animationDelay();
-    cout << "               *   **                                                       **   *" << endl;
-    animationDelay();
-    cout << "               **   **          *                               *          **   **" << endl;
-    animationDelay();
-    cout << "               ***    *         **                             **         *    ***" << endl;
-    animationDelay();
-    cout << "                ****            *********************************            ****" << endl;
-    animationDelay();
-    cout << "                  *******      ***           *******           ***      *******" << endl;
-    animationDelay();
-    cout << "                     ************             *****             ************" << endl;
-    animationDelay();
-    cout << "                        **********    **** * **   ** *******   **********" << endl;
-    animationDelay();
-    cout << "                              ********** ** **     ** ****************" << endl;
-    animationDelay();
-    cout << "                        *************** ** **  ***  **  *****************" << endl;
-    animationDelay();
-    cout << "                         ******   *********************  ******   ******" << endl;
-    animationDelay();
-    cout << "                                   **********************  ***" << endl;
-    animationDelay();
-    cout << "                                   ************************ **" << endl;
-    animationDelay();
-    cout << "                                    **** ** ** **** ** ** **" << endl;
-    animationDelay();
-    cout << "                                     ***  *  *  **  *  *  ***" << endl;
-    animationDelay();
-    cout << "                                      **                  **" << endl;
-    animationDelay();
-    cout << "                                        *                *" << endl;
-    cout << endl;
-    
-    cout << "                                              VER1.0"<< endl << endl;
-    cout << "                   ██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗" << endl;
-    cout << "                   ██║    ██║██╔════╝██║     ██╔════╝██╔═══██╗████╗ ████║██╔════╝" << endl;
-    cout << "                   ██║ █╗ ██║█████╗  ██║     ██║     ██║   ██║██╔████╔██║█████╗" << endl;
-    cout << "                   ██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝" << endl;
-    cout << "                   ╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗" << endl;
-    cout << "                   ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝" << endl;
     cout << endl;
     
 }
 
-void animationDelay(int ms){
-    #ifdef __APPLE__
-        usleep(ms);
-    #endif
-    #ifdef _WIN32
-        Sleep(ms/1000);
-    #endif
-}
