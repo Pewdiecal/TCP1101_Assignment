@@ -915,7 +915,7 @@ void render(){
     static bool isRunning = false;
     
     for(int i = 0; i < width + 1; i++ ){ // MARK: render top width
-        cout << ".";
+        cout << "#";
     }
     cout << endl;
     
@@ -935,7 +935,7 @@ void render(){
         for(int c = 0; c < width; c++){ // MARK: render horizontal space
             
             if (c==0){ // MARK: if is 1st dot print * to build border.
-                cout << "." ;
+                cout << "#" ;
                 
             } else if(((k==y && c==1 && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && c==x) || (c==x && notFinishPrinting) || (c==1 && notFinishPrinting && remainingSpacesX < charWidth && isWrapAroundEnabled) || (k==y && isPaused && c==1) || (isPaused && c==1 && notFinishPrinting) )){ // MARK: if not 1st dot, check if the current coordinate match x && y value to print char.
                 
@@ -1024,16 +1024,16 @@ void render(){
             }
             
             if (c == width - 1){ // MARK: print * when width - 1 = 40
-                cout << "." ;
+                cout << "#" ;
             }
             
         }
         cout << endl;
-        
+         
     }
     
     for(int i = 0; i < width + 1; i++ ){ // MARK: render bottom border width
-        cout << ".";
+        cout << "#";
     }
     cout << endl;
     
