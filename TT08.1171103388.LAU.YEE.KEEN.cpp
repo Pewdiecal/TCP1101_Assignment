@@ -16,6 +16,10 @@
 #include <cctype>
 #include <iomanip>
 
+#ifdef __WIN32__
+#include <windows.h>
+#endif
+
 using namespace std;
 
 const int width = 41;
