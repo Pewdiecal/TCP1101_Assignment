@@ -723,16 +723,16 @@ void inputHandler(){ //this func responsible to ask and receive user inputs only
 
     clear();
     
-        cout << "Please enter the words that you would like to display: ";
+        cout << "Please enter the words that you would like to display (up to 25 characters including spaces): ";
         getline (cin, charList);
         cout << endl;
     
-        cout << "Please enter the anchor dot for X axis:";
+        cout << "Please enter the anchor dot for X axis (0 - 39 only):";
         cin >> x;
         x=x+1;
         cout << endl;
    
-        cout << "Please enter the anchor dot for Y axis:";
+        cout << "Please enter the anchor dot for Y axis (0 - 19 only):";
         cin >> y;
     
         y=((height)-y)-1;
