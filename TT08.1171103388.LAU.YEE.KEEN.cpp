@@ -15,16 +15,7 @@
 #include <string>
 #include <cctype>
 #include <iomanip>
-// check the OS version and include the header file that is compatible with the OS
-#ifdef __APPLE__
-#include <unistd.h>
-#endif
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#ifdef __linux__
-#include <unistd.h>
-#endif
+
 using namespace std;
 
 const int width = 41;
@@ -40,7 +31,7 @@ void coordinateManager(bool pauseStats); //calculates and manages the whole coor
 string charList;
 string *charStager(); //Staging function used to put char on stage
 void inputHandler(); //Handle user inputs
-void delay();
+void delay2();
 void clear();
 
 class charArts { // a class that holds all the characters arts details.
@@ -664,7 +655,9 @@ public:
 
 
 int main(){
-
+#ifdef _WIN32
+    system("color a");
+#endif
     inputHandler(); // will get the user input first
     charStager(); // this function will store all the characters choosen by the user into an array
     while (true){ // Infinite loop to keep the frame rendering
@@ -677,7 +670,7 @@ int main(){
             }
             timeSteps--;
         }
-        delay();
+        delay2();
         clear();
     }
     
@@ -723,25 +716,30 @@ void coordinateManager(bool pauseStats){ // this func reponsible to calculate an
 
 
 void inputHandler(){ //this func responsible to ask and receive user inputs only
+
+    clear();
     
-    cout << "Please enter the words that you would like to display: ";
-    getline (cin, charList);
-    cout << endl;
-
-    cout << "Please enter the anchor dot for X axis:";
-    cin >> x;
-    x=x+1;
-    cout << endl;
-
-    cout << "Please enter the anchor dot for Y axis:";
-    cin >> y;
-    y=((height)-y)-1;
-    cout << endl;
-
-    cout << "Please enter your scrolling direction" << endl;
-    cout << "0.HORIZONTAL_LEFT, 1.HORIZONTAL_RIGHT, 2.VERTICAL_UP, 3.VERTICAL_DOWN, 4.STATIC :";
-    cin >> directionInput;
-    cout << endl;
+        cout << "Please enter the words that you would like to display: ";
+        getline (cin, charList);
+        cout << endl;
+    
+        cout << "Please enter the anchor dot for X axis:";
+        cin >> x;
+        x=x+1;
+        cout << endl;
+   
+        cout << "Please enter the anchor dot for Y axis:";
+        cin >> y;
+    
+        y=((height)-y)-1;
+        cout << endl;
+    
+        cout << "Please enter your scrolling direction" << endl;
+        cout << "0.HORIZONTAL_LEFT, 1.HORIZONTAL_RIGHT, 2.VERTICAL_UP, 3.VERTICAL_DOWN, 4.STATIC:";
+        cin >> directionInput;
+    
+        cout << endl;
+    
     
     if(directionInput <= 3){ //if the user wants the scrolling effects (0.HORIZONTAL_LEFT, 1.HORIZONTAL_RIGHT, 2.VERTICAL_UP, 3.VERTICAL_DOWN), ask below questions
         cout << "Please enter time steps, (Enter -1 for unlimited time stpes):";
@@ -844,6 +842,7 @@ string *charStager(){ // this func responsible to read the user's inputted strin
             for (int e = 0; e < 11; e++) { // store the char arts array that has been pointed by ptr into the staging array
                 stagedChar[e].append(*(ptr+e)); // ptr will be dereferenced according to the address before being stored into the array
             }
+
         }
     }
     
@@ -851,57 +850,56 @@ string *charStager(){ // this func responsible to read the user's inputted strin
     return stagedChar; // return the stagedChar array address
 }
 
-void delay(){ // to delay the refresh rate of each frame
-    int microSec;
+void delay2()
+{ // to delay each time the frame refreshes
+    int delay;
     switch (scrollingSpeed) {
         case 1:
-            microSec = 1000000;
+            delay = 300000000;
             break;
         case 2:
-            microSec = 500000;
+            delay = 250000000;
             break;
         case 3:
-            microSec = 100000;
+            delay = 22000000;
             break;
         case 4:
-            microSec = 50000;
+            delay = 19000000;
             break;
         case 5:
-            microSec = 10000;
+            delay = 15000000;
             break;
         case 6:
-            microSec = 5000;
+            delay = 12000000;
             break;
         case 7:
-            microSec = 1000;
+            delay = 10000000;
             break;
         case 8:
-            microSec = 500;
+            delay = 8888888;
             break;
         case 9:
-            microSec = 100;
+            delay = 6666666;
             break;
         case 10:
-            microSec = 10;
+            delay = 2000000;
             break;
         default:
             break;
     }
-    // Preprocessor code to check for OS version and substitute it with the correct calling function
-    #ifdef __APPLE__
-        usleep(microSec);
-    #endif
-    #ifdef _WIN32
-        Sleep(microSec/1000);
-    #endif
+    for( int i = 0; i < delay; ++i )
+    { }
 }
 
 void clear(){ // clear the previously rendered frame
     #ifdef __APPLE__
-    system("clear");
+        system("clear");
     #endif
     #ifdef _WIN32
-    system("cls");
+        system("cls");
+    #endif
+    #ifdef __linux__
+        system("clear");
     #endif
 }
 
@@ -951,15 +949,15 @@ void render(){ // this func responsible to render all the scenes including movem
                 
                 notFinishPrinting = true;
                 notFinishPrinting_debug = notFinishPrinting; //  DEBUGGING PURPOSES
-                if (printedHeight <= 10 && notFinishPrinting){
+                if (printedHeight <= 10 && notFinishPrinting){ // if array element not finish printed yet and notFinishPrinting is true, start printing the char arts
                     notFinishPrinting_debug = notFinishPrinting; //  DEBUGGING PURPOSES
                     displayedPercentage = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
                     
                     if((remainingSpacesX < charWidth)){ // if not enough printing spaces for stagedChar
-                       if(c==1 && remainingSpacesX >=0 && isWrapAroundEnabled){
+                       if(c==1 && remainingSpacesX >=0 && isWrapAroundEnabled){ // (CODE FOR MILESTONE 2 use)
                             int test = 0; //  NEED TO BE OPTIMIZED, cause skipWidth did not start count from 0
                         
-                            for(int contPrintWidth = remainingSpacesX+1; contPrintWidth <= charWidth; contPrintWidth++){
+                            for(int contPrintWidth = remainingSpacesX+1; contPrintWidth <= charWidth; contPrintWidth++){ //
                                 
                                 cout << (*(ptr_stagedChar+printedHeight)).at(contPrintWidth);
                                 
@@ -971,17 +969,17 @@ void render(){ // this func responsible to render all the scenes including movem
                             
                         }
                         
-                        if(((k==y && c==x) || (c==x && notFinishPrinting)) && !isPaused){
+                        if(((k==y && c==x) || (c==x && notFinishPrinting)) && !isPaused){ //starts to print while coordinate is not paused
                             for(printedWidth = 0; printedWidth <= remainingSpacesX; printedWidth++){
                                 cout << (*(ptr_stagedChar+printedHeight)).at(printedWidth);
-                                skipWidth = printedWidth;
+                                skipWidth = printedWidth; // set skipWidth to the printed amout of string size
                                 
                             }
                         }
                         
                         skipWidth_debug = skipWidth; //  DEBUGGING PURPOSES
     
-                    } else if((remainingSpacesX >= charWidth) && !isPaused){ //  when x >=9
+                    } else if((remainingSpacesX >= charWidth) && !isPaused){ // if space is sufficient to print all char
                         displayedPercentage = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
                         cout << *(ptr_stagedChar+printedHeight);
                         skipWidth = charWidth;
@@ -989,7 +987,7 @@ void render(){ // this func responsible to render all the scenes including movem
                         
                     }
                     
-                    if(notFinishPrinting && isPaused && c==1){
+                    if(notFinishPrinting && isPaused && c==1){ // if moving towards left, it will remove width by width from the array without moving the anchor dot
                         for(int width=widthMinus; width <= widthAdd ; width++){
                             cout << (*(ptr_stagedChar+printedHeight)).at(width);
                             skipWidth = width-widthMinus;
@@ -998,28 +996,27 @@ void render(){ // this func responsible to render all the scenes including movem
                         
                     }
                     
-                    if((k==y && c==x) || (c==x && notFinishPrinting) || (isPaused && c==1 && notFinishPrinting) || (k==y && isPaused && c==1)){
+                    if((k==y && c==x) || (c==x && notFinishPrinting) || (isPaused && c==1 && notFinishPrinting) || (k==y && isPaused && c==1)){ // increase the stagedChar array index
                         printedHeight ++;
                     }
                     
-                } else{
+                } else{ // once char printing is completed, reset everything back its origin value.
                     printedHeight = 0;
                     cout << " ";
                     notFinishPrinting = false;
-                    if(isPaused && (widthMinus <= charWidth)){
+                    
+                    if(isPaused && (widthMinus <= charWidth)){ // increase the initialization value of for loop to remove front width by 1
                         widthMinus++;
-                        if(y==1 || y==10){
-                            cout << widthMinus;
-                        }
+
                     }
-                    if(isPaused && (widthMinus > charWidth)){
+                    if(isPaused && (widthMinus > charWidth)){ // once widthMinus has exceeded the charWidth value, reset everything
                         x=width;
                         isPaused = false;
                         isRunning = false;
                         widthMinus = 1;
                         
                     }
-                    if(isPaused && (widthAdd < charWidth)){
+                    if(isPaused && (widthAdd < charWidth)){ //increase the validation value of for loop by 1 to display the width behind the border
                         widthAdd++;
                     }
                     notFinishPrinting_debug = notFinishPrinting; //  DEBUGGING PURPOSES
@@ -1028,7 +1025,7 @@ void render(){ // this func responsible to render all the scenes including movem
             } else{ // if not match x && y value, just print blank space
                 if (skipWidth <= charWidth && skipWidth >0){ //To delete additional space after cout each char
                     skipWidth--;
-                } else{
+                } else{ // print blank space
                     cout << " ";
                 }
                 
