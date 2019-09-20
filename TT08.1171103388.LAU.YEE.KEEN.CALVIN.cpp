@@ -15,28 +15,30 @@
 #include <string>
 #include <cctype>
 #include <iomanip>
+#include <fstream>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 using namespace std;
 
-const int width = 41;
-const int height = 20;
-int x, y; //coordinates holder
 bool isPaused = false; //coordinate status
 enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN}; //direction input constant
 int directionInput; //direction input value holder
 int timeSteps = -1; //time steps value holder
 int scrollingSpeed = 1; //scrolling speed value holder
-void render(); //renders animation, characters on screen
-void coordinateManager(bool pauseStats); //calculates and manages the whole coordinates system
+int width = 41;
+int height = 20;
+int x, y; //coordinates holder
+char drawingChar;
+string wrap;
+string rotation;
 string charList;
 string *charStager(); //Staging function used to put char on stage
 void inputHandler(); //Handle user inputs
+void fStreamHandler();
 void delay2();
 void clear();
+void render(); //renders animation, characters on screen
+void coordinateManager(bool pauseStats); //calculates and manages the whole coordinates system
 
 class charArts { // a class that holds all the characters arts details.
 public:
@@ -662,7 +664,8 @@ int main(){
 #ifdef _WIN32
     system("color a");
 #endif
-    inputHandler(); // will get the user input first
+    fStreamHandler();
+    //inputHandler(); // will get the user input first
     charStager(); // this function will store all the characters choosen by the user into an array
     while (true){ // Infinite loop to keep the frame rendering
         render();
@@ -718,6 +721,71 @@ void coordinateManager(bool pauseStats){ // this func reponsible to calculate an
     }
 }
 
+void fStreamHandler(){
+    clear();
+    string fileName;
+    cout << "Please enter your input filename: ";
+    getline (cin, fileName);
+    
+    fstream fileStream;
+    fileStream.open(fileName);
+    if (fileStream.is_open()){
+        while (true){
+            static int lineNum = 0;
+            if(lineNum == 0){
+                fileStream >> drawingChar;
+            } else if (lineNum == 1){
+                fileStream >> scrollingSpeed;
+            } else if (lineNum == 2){
+                getline(fileStream,charList);
+                getline(fileStream,charList);
+            } else if (lineNum == 3){
+                fileStream >> x >> y;
+                x=x+1;
+                y=((height)-y)-1;
+            } else if (lineNum == 4){
+                int widthTemp = 0;
+                int heightTemp = 0;
+                fileStream >> heightTemp >> widthTemp;
+                if (widthTemp !=0){
+                    width = ++widthTemp;
+                }
+                if (heightTemp !=0){
+                    height = heightTemp;
+                }
+            } else if (lineNum == 5){
+                string dir;
+                fileStream >> dir;
+
+                if(dir == "lr"){
+                    directionInput = HORIZONTAL_RIGHT;
+                } else if(dir == "rl"){
+                    directionInput = HORIZONTAL_LEFT;
+                } else if(dir == "ud"){
+                    directionInput = VERTICAL_DOWN;
+                } else if(dir == "du"){
+                    directionInput = VERTICAL_UP;
+                }
+                break;
+            }
+            lineNum ++;
+        }
+    } else{
+        cerr << "ERR: FILE_UNABLE_TO_OPEN" << endl;
+        cout << "Please try again" << endl;
+        cout << "Press any key to continue..." << endl;
+#ifdef __APPLE__
+        system("read");
+#endif
+#ifdef _WIN32
+        system("pause");
+#endif
+#ifdef __linux__
+        system("read");
+#endif
+        fStreamHandler();
+    }
+}
 
 void inputHandler(){ //this func responsible to ask and receive user inputs only
 
