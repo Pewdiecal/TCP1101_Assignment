@@ -17,10 +17,11 @@
 #include <iomanip>
 #include <fstream>
 
-
 using namespace std;
 
 bool isPaused = false; //coordinate status
+bool isWrapAroundEnabled = false; // enable or disable wrap around effect for X axis
+bool isMirrorEnabled = false;
 enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN}; //direction input constant
 int directionInput; //direction input value holder
 int timeSteps = -1; //time steps value holder
@@ -28,10 +29,11 @@ int scrollingSpeed = 1; //scrolling speed value holder
 int width = 41;
 int height = 20;
 int x, y; //coordinates holder
-char drawingChar;
+char drawingChar = '#';
 string wrap;
 string rotation;
 string charList;
+string rot;
 string *charStager(); //Staging function used to put char on stage
 void inputHandler(); //Handle user inputs
 void fStreamHandler();
@@ -666,7 +668,7 @@ int main(){
 #endif
     fStreamHandler();
     //inputHandler(); // will get the user input first
-    charStager(); // this function will store all the characters choosen by the user into an array
+    /*charStager(); // this function will store all the characters choosen by the user into an array
     while (true){ // Infinite loop to keep the frame rendering
         render();
         coordinateManager(isPaused);
@@ -679,7 +681,7 @@ int main(){
         }
         delay2();
         clear();
-    }
+    }*/
     
 }
 
@@ -724,11 +726,11 @@ void coordinateManager(bool pauseStats){ // this func reponsible to calculate an
 void fStreamHandler(){
     clear();
     string fileName;
-    cout << "Please enter your input filename: ";
-    getline (cin, fileName);
+    //cout << "Please enter your input filename: ";
+    //getline (cin, fileName);
     
     fstream fileStream;
-    fileStream.open(fileName);
+    fileStream.open("test.txt");
     if (fileStream.is_open()){
         while (true){
             static int lineNum = 0;
@@ -755,8 +757,10 @@ void fStreamHandler(){
                 }
             } else if (lineNum == 5){
                 string dir;
-                fileStream >> dir;
-
+                string wrapAround;
+                string tmpRot;
+                fileStream >> dir >> wrapAround;
+                
                 if(dir == "lr"){
                     directionInput = HORIZONTAL_RIGHT;
                 } else if(dir == "rl"){
@@ -766,6 +770,22 @@ void fStreamHandler(){
                 } else if(dir == "du"){
                     directionInput = VERTICAL_UP;
                 }
+                
+                if(wrapAround == "wr"){
+                    isWrapAroundEnabled = true;
+                    fileStream >> tmpRot;
+                } else if(wrapAround == "rot90"){
+                    rot = "rot90";
+                } else if(wrapAround == "rot-90"){
+                    rot = "rot-90";
+                } else if(wrapAround == "mr"){
+                    isMirrorEnabled = true;
+                }
+                
+                if (tmpRot.size()>3) {
+                    rot = tmpRot;
+                }
+                
                 break;
             }
             lineNum ++;
@@ -832,7 +852,7 @@ string *charStager(){ // this func responsible to read the user's inputted strin
     
     charArts charObj; // charArts object
     static bool isCodeExecuted = false; // to make sure that this func is already being executed at the very begining of the program
-    static string stagedChar[11]; // staging array
+    static string stagedChar[1000]; // staging array
     string *ptr; // string pointer
     
     for (int i = 0; i < charList.size(); i++){ // loop through every single char in charList to convert all char in to char arts
@@ -914,14 +934,22 @@ string *charStager(){ // this func responsible to read the user's inputted strin
             for (int e = 0; e < 11; e++) { // store the char arts array that has been pointed by ptr into the staging array
                 stagedChar[e].append(*(ptr+e)); // ptr will be dereferenced according to the address before being stored into the array
             }
-
+            
+            for (int j = 0; j < 11; j++) {
+                string listOfChars = stagedChar[j];
+                for (int i = 0; i<listOfChars.size(); i++) {
+                    if (listOfChars[i] == '=' && listOfChars[i] != ' ') {
+                        listOfChars[i] = drawingChar;
+                    }
+                }
+                stagedChar[j] = listOfChars;
+            }
         }
     }
     
     isCodeExecuted = true; // set to true once this func is being called and completed
     return stagedChar; // return the stagedChar array address
 }
-
 void delay2()
 { // to delay each time the frame refreshes
     int delay;
@@ -982,7 +1010,6 @@ void render(){ // this func responsible to render all the scenes including movem
     static int skipWidth = 0; // spaces needs to be deleted
     int charWidth = (*ptr_stagedChar).size()-1; // total size of string from a single element from stagedChar
     static bool notFinishPrinting = false; // to check if the whole stagedChar array has finish printing or not
-    static bool isWrapAroundEnabled = false; // enable or disable wrap around effect for X axis
     static int printedHeight = 0; // stores current printed element index from stagedChar
     static int printedWidth = 0; // stores current size of string that has been printed from stagedChar
     const double percent = 50.0;
