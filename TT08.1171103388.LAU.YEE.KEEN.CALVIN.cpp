@@ -21,19 +21,20 @@ using namespace std;
 
 bool isPaused = false; //coordinate status
 bool isWrapAroundEnabled = false; // enable or disable wrap around effect for X axis
-bool isMirrorEnabled = false;
 enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN}; //direction input constant
+enum rotation {NORMAL, CLOCKWISE_90, ANTI_CLOCKWISE_90, MIRROR};
 int directionInput; //direction input value holder
 int timeSteps = -1; //time steps value holder
 int scrollingSpeed = 1; //scrolling speed value holder
 int width = 41;
 int height = 20;
 int x, y; //coordinates holder
+int rot;
+int totalWid; //total width of original char before any rotation
 char drawingChar = '#';
 string wrap;
 string rotation;
 string charList;
-string rot;
 string *charStager(); //Staging function used to put char on stage
 void inputHandler(); //Handle user inputs
 void fStreamHandler();
@@ -635,17 +636,17 @@ public:
     }
     
     string *_9(){
-       static string array[] = {  "===========",
-            "===     ===",
-            "==  ===   =",
-            "=  =====  =",
-            "=  =====  =",
-            "==  ===   =",
-            "====   =  =",
-            "========  =",
-            "========  =",
-            "========  =",
-            "===========" };
+       static string array[] = {"===========",
+                                "===     ===",
+                                "==  ===   =",
+                                "=  =====  =",
+                                "=  =====  =",
+                                "==  ===   =",
+                                "====   =  =",
+                                "========  =",
+                                "========  =",
+                                "========  =",
+                                "===========" };
         return array;
         
     }
@@ -668,7 +669,7 @@ int main(){
 #endif
     fStreamHandler();
     //inputHandler(); // will get the user input first
-    /*charStager(); // this function will store all the characters choosen by the user into an array
+    charStager(); // this function will store all the characters choosen by the user into an array
     while (true){ // Infinite loop to keep the frame rendering
         render();
         coordinateManager(isPaused);
@@ -681,7 +682,7 @@ int main(){
         }
         delay2();
         clear();
-    }*/
+    }
     
 }
 
@@ -774,16 +775,14 @@ void fStreamHandler(){
                 if(wrapAround == "wr"){
                     isWrapAroundEnabled = true;
                     fileStream >> tmpRot;
-                } else if(wrapAround == "rot90"){
-                    rot = "rot90";
-                } else if(wrapAround == "rot-90"){
-                    rot = "rot-90";
-                } else if(wrapAround == "mr"){
-                    isMirrorEnabled = true;
-                }
-                
-                if (tmpRot.size()>3) {
-                    rot = tmpRot;
+                } else if(wrapAround == "rot90" || (wrapAround == "rot90" && tmpRot.size()>3)){
+                    rot = CLOCKWISE_90;
+                } else if(wrapAround == "rot-90" || (wrapAround == "rot-90" && tmpRot.size()>3)){
+                    rot = ANTI_CLOCKWISE_90;
+                } else if(wrapAround == "mr" || (wrapAround == "mr" && tmpRot.size()>3)){
+                    rot = MIRROR;
+                } else {
+                    rot = NORMAL;
                 }
                 
                 break;
@@ -852,7 +851,8 @@ string *charStager(){ // this func responsible to read the user's inputted strin
     
     charArts charObj; // charArts object
     static bool isCodeExecuted = false; // to make sure that this func is already being executed at the very begining of the program
-    static string stagedChar[1000]; // staging array
+    string cachingArray[11];
+    static string stagedChar[10000]; // staging array
     string *ptr; // string pointer
     
     for (int i = 0; i < charList.size(); i++){ // loop through every single char in charList to convert all char in to char arts
@@ -930,26 +930,66 @@ string *charStager(){ // this func responsible to read the user's inputted strin
             ptr = charObj.N();
         }
         if(!isCodeExecuted){ // if this func is not being executed before, only then store all the element from the char arts array into the staging array.
-            
             for (int e = 0; e < 11; e++) { // store the char arts array that has been pointed by ptr into the staging array
-                stagedChar[e].append(*(ptr+e)); // ptr will be dereferenced according to the address before being stored into the array
+                cachingArray[e].append(*(ptr+e)); // ptr will be dereferenced according to the address before being stored into the array
             }
             
-            for (int j = 0; j < 11; j++) {
-                string listOfChars = stagedChar[j];
-                for (int i = 0; i<listOfChars.size(); i++) {
-                    if (listOfChars[i] == '=' && listOfChars[i] != ' ') {
-                        listOfChars[i] = drawingChar;
+            totalWid = cachingArray[0].size();
+            
+            
+        }
+    }
+    
+    if(!isCodeExecuted){
+
+        switch (rot) {
+            case CLOCKWISE_90:
+                for(int i=0; i < totalWid; i++){ //i = calculate width
+                    for(int j = 10; j >=0; j--){ //j = original height
+                        stagedChar[i]+=(cachingArray[j].at(i));
                     }
                 }
-                stagedChar[j] = listOfChars;
+                break;
+            
+            case ANTI_CLOCKWISE_90:
+                for(int i=totalWid-1; i >= 0 ; i--){ //i = width
+                    static int g = 0;
+                    for(int j = 0; j < 11; j++){ //j = height
+                        stagedChar[g]+=(cachingArray[j].at(i));
+                    }
+                    g++;
+                }
+                break;
+                
+            case MIRROR:
+                for(int i = 0; i < 11; i++){
+                    static int h =10;
+                    stagedChar[i]+=(cachingArray[h]);
+                    h--;
+                }
+                break;
+            default:
+                for (int e = 0; e < 11; e++) { // store the char arts array that has been pointed by ptr into the staging array
+                    stagedChar[e].append(cachingArray[e]); // ptr will be dereferenced according to the address before being stored into the array
+                }
+                break;
+        }
+        
+        for (int j = 0; j < totalWid; j++) {
+            string listOfChars = stagedChar[j];
+            for (int i = 0; i<listOfChars.size(); i++) {
+                if (listOfChars[i] == '=' && listOfChars[i] != ' ') {
+                    listOfChars[i] = drawingChar;
+                }
             }
+            stagedChar[j] = listOfChars;
         }
     }
     
     isCodeExecuted = true; // set to true once this func is being called and completed
     return stagedChar; // return the stagedChar array address
 }
+
 void delay2()
 { // to delay each time the frame refreshes
     int delay;
@@ -1048,7 +1088,7 @@ void render(){ // this func responsible to render all the scenes including movem
                 
                 notFinishPrinting = true;
                 notFinishPrinting_debug = notFinishPrinting; //  DEBUGGING PURPOSES
-                if (printedHeight <= 10 && notFinishPrinting){ // if array element not finish printed yet and notFinishPrinting is true, start printing the char arts
+                if (printedHeight <= (totalWid-1) && notFinishPrinting){ // if array element not finish printed yet and notFinishPrinting is true, start printing the char arts
                     notFinishPrinting_debug = notFinishPrinting; //  DEBUGGING PURPOSES
                     displayedPercentage = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
                     
@@ -1143,6 +1183,5 @@ void render(){ // this func responsible to render all the scenes including movem
         cout << "#";
     }
     cout << endl;
-    
 }
 
