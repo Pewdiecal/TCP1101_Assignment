@@ -30,7 +30,7 @@ int width = 41;
 int height = 20;
 int x, y; //coordinates holder
 int rot;
-int totalWid; //total width of original char before any rotation
+int totalStagingIndex; //total width of original char before any rotation
 char drawingChar = '#';
 string wrap;
 string rotation;
@@ -671,6 +671,7 @@ int main(){
     //inputHandler(); // will get the user input first
     charStager(); // this function will store all the characters choosen by the user into an array
     while (true){ // Infinite loop to keep the frame rendering
+        rot = NORMAL;
         render();
         coordinateManager(isPaused);
         if(timeSteps >=0){ // to check the user actually want to stop the execution of the program by specifying a time steps
@@ -934,7 +935,7 @@ string *charStager(){ // this func responsible to read the user's inputted strin
                 cachingArray[e].append(*(ptr+e)); // ptr will be dereferenced according to the address before being stored into the array
             }
             
-            totalWid = cachingArray[0].size();
+            totalStagingIndex = cachingArray[0].size();
             
             
         }
@@ -944,7 +945,7 @@ string *charStager(){ // this func responsible to read the user's inputted strin
 
         switch (rot) {
             case CLOCKWISE_90:
-                for(int i=0; i < totalWid; i++){ //i = calculate width
+                for(int i=0; i < totalStagingIndex; i++){ //i = calculate width
                     for(int j = 10; j >=0; j--){ //j = original height
                         stagedChar[i]+=(cachingArray[j].at(i));
                     }
@@ -952,7 +953,7 @@ string *charStager(){ // this func responsible to read the user's inputted strin
                 break;
             
             case ANTI_CLOCKWISE_90:
-                for(int i=totalWid-1; i >= 0 ; i--){ //i = width
+                for(int i=totalStagingIndex-1; i >= 0 ; i--){ //i = width
                     static int g = 0;
                     for(int j = 0; j < 11; j++){ //j = height
                         stagedChar[g]+=(cachingArray[j].at(i));
@@ -972,10 +973,11 @@ string *charStager(){ // this func responsible to read the user's inputted strin
                 for (int e = 0; e < 11; e++) { // store the char arts array that has been pointed by ptr into the staging array
                     stagedChar[e].append(cachingArray[e]); // ptr will be dereferenced according to the address before being stored into the array
                 }
+                totalStagingIndex = 11; //set it as 11 as original total array index for all char arts.
                 break;
         }
         
-        for (int j = 0; j < totalWid; j++) {
+        for (int j = 0; j < totalStagingIndex; j++) {
             string listOfChars = stagedChar[j];
             for (int i = 0; i<listOfChars.size(); i++) {
                 if (listOfChars[i] == '=' && listOfChars[i] != ' ') {
@@ -1044,7 +1046,7 @@ void clear(){ // clear the previously rendered frame
 }
 
 void render(){ // this func responsible to render all the scenes including movement, char arts, and animations.
-    
+    cout << totalStagingIndex << endl;
     charArts charObj;
     string *ptr_stagedChar = charStager(); // stores the address of stagedChar array from charStager()
     static int skipWidth = 0; // spaces needs to be deleted
@@ -1053,7 +1055,7 @@ void render(){ // this func responsible to render all the scenes including movem
     static int printedHeight = 0; // stores current printed element index from stagedChar
     static int printedWidth = 0; // stores current size of string that has been printed from stagedChar
     const double percent = 50.0;
-    double displayedPercentage = 0.00;
+    double displayedPercentage_horizontal = 0.00;
     int remainingSpacesX = (width-1) - x; // calculate remaining spaces for printing on X axis based on anchor dot
     int skipWidth_debug = 0; // DEBUGGING PURPOSES
     bool notFinishPrinting_debug; // DEBUGGING PURPOSES
@@ -1066,7 +1068,7 @@ void render(){ // this func responsible to render all the scenes including movem
     }
     cout << endl;
     
-    if(((height-1)-y) <= 10){ //  if char cannot finish print on 1st time start, print the remaining char at first. (VERTICAL USE)
+    if(((height-1)-y) < totalStagingIndex){ //  if char cannot finish print on 1st time start, print the remaining char at first. (VERTICAL USE)
         notFinishPrinting = true;
         printedHeight = (height-y); //  will be = 11 when y = 9, Thus, cause if (printedHeight <= 10 && notFinishPrinting) return false.
     }
@@ -1088,9 +1090,9 @@ void render(){ // this func responsible to render all the scenes including movem
                 
                 notFinishPrinting = true;
                 notFinishPrinting_debug = notFinishPrinting; //  DEBUGGING PURPOSES
-                if (printedHeight <= (totalWid-1) && notFinishPrinting){ // if array element not finish printed yet and notFinishPrinting is true, start printing the char arts
+                if (printedHeight < totalStagingIndex && notFinishPrinting){ // if array element not finish printed yet and notFinishPrinting is true, start printing the char arts
                     notFinishPrinting_debug = notFinishPrinting; //  DEBUGGING PURPOSES
-                    displayedPercentage = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
+                    displayedPercentage_horizontal = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
                     
                     if((remainingSpacesX < charWidth)){ // if not enough printing spaces for stagedChar
                        if(c==1 && remainingSpacesX >=0 && isWrapAroundEnabled){ // (CODE FOR MILESTONE 2 use)
@@ -1119,7 +1121,7 @@ void render(){ // this func responsible to render all the scenes including movem
                         skipWidth_debug = skipWidth; //  DEBUGGING PURPOSES
     
                     } else if((remainingSpacesX >= charWidth) && !isPaused){ // if space is sufficient to print all char
-                        displayedPercentage = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
+                        displayedPercentage_horizontal = (static_cast<double>(printedWidth)/static_cast<double>(charWidth))*100.0;
                         cout << *(ptr_stagedChar+printedHeight);
                         skipWidth = charWidth;
                         skipWidth_debug = skipWidth; //  DEBUGGING PURPOSES
