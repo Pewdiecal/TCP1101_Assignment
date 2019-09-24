@@ -968,6 +968,7 @@ string *charStager(){ // this func responsible to read the user's inputted strin
                     stagedChar[i]+=(cachingArray[h]);
                     h--;
                 }
+                totalStagingIndex = 11; //set it as 11 as original total array index for all char arts.
                 break;
             default:
                 for (int e = 0; e < 11; e++) { // store the char arts array that has been pointed by ptr into the staging array
@@ -1068,7 +1069,7 @@ void render(){ // this func responsible to render all the scenes including movem
     }
     cout << endl;
     
-    if(((height-1)-y) < totalStagingIndex){ //  if char cannot finish print on 1st time start, print the remaining char at first. (VERTICAL USE)
+    if(((height-1)-y) < totalStagingIndex && isWrapAroundEnabled){ //  if char cannot finish print on 1st time start, print the remaining char at first. (VERTICAL USE)
         notFinishPrinting = true;
         printedHeight = (height-y); //  will be = 11 when y = 9, Thus, cause if (printedHeight <= 10 && notFinishPrinting) return false.
     }
