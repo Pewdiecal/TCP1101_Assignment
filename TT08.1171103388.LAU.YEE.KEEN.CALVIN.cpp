@@ -16,11 +16,13 @@
 #include <cctype>
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
 bool isPaused = false; //coordinate status
 bool isWrapAroundEnabled = false; // enable or disable wrap around effect for X axis
+bool isInceptionEnabled = false;
 enum direction {HORIZONTAL_LEFT, HORIZONTAL_RIGHT, VERTICAL_UP, VERTICAL_DOWN}; //direction input constant
 enum rotation {NORMAL, CLOCKWISE_90, ANTI_CLOCKWISE_90, MIRROR};
 int directionInput; //direction input value holder
@@ -728,41 +730,179 @@ void coordinateManager(bool pauseStats){ // this func reponsible to calculate an
 void fStreamHandler(){
     clear();
     string fileName;
-    //cout << "Please enter your input filename: ";
-    //getline (cin, fileName);
+    bool containsError = false;
+    bool containsWarning = false;
+    cout << "Please enter your input filename: ";
+    getline (cin, fileName);
     
     fstream fileStream;
-    fileStream.open("test.txt");
+    fileStream.open(fileName);
     if (fileStream.is_open()){
         while (true){
             static int lineNum = 0;
             if(lineNum == 0){
-                fileStream >> drawingChar;
+                string temp;
+                getline(fileStream, temp);
+                if(temp.size()!=0){
+                    if (temp.size()>1) {
+                        cout << "ERROR ON LINE 1: ";
+                        cout << "Please enter with only 1 character and re-run the program." << endl;
+                        containsError = true;
+                    }
+                    
+                    if(temp.size()!=0 && !containsError){
+                        drawingChar = temp[0];
+                    }
+                } else{
+                    if(temp == "incep_enable"){
+                        isInceptionEnabled = true;
+                        exit(1);
+                    }
+                }
+                
             } else if (lineNum == 1){
-                fileStream >> scrollingSpeed;
+                string temp;
+                getline(fileStream, temp);
+                if(temp.size()==0){
+                    cout << "ERROR ON LINE 2: ";
+                    cout << "Missing scrolling speed value, please try again. (Syntax: 1=slowest -> 10=fastest)" << endl;
+                    containsError = true;
+                }
+                for(int i = 0; i < temp.size(); i++){
+                    if (!isdigit(temp[i])) {
+                        cout << "ERROR ON LINE 2: ";
+                        cout << "Non integer value detected, please try again." << endl;
+                        containsError = true;
+                        break;
+                    }
+                }
+                if(!containsError){
+                    scrollingSpeed = stoi(temp);
+                }
             } else if (lineNum == 2){
-                getline(fileStream,charList);
-                getline(fileStream,charList);
+                string temp;
+                getline(fileStream,temp);
+                
+                if(temp.size()==0){
+                    cout << "ERROR ON LINE 3: ";
+                    cout << "Missing string input, please try again." << endl;
+                    containsError = true;
+                }
+                if(temp.size() > 25){
+                    cout << "ERROR ON LINE 3: ";
+                    cout << "Input has exceeded the 25 character limit." << endl;
+                    containsError = true;
+                }
+                for(int i = 0; i < temp.size(); i++){
+                    if(!isdigit(temp[i]) && !isalpha(temp[i]) && !containsError){
+                        cout << "ERROR ON LINE 3: ";
+                        cout << "Input contains forbidden symbols characters." << endl;
+                        containsError = true;
+                    }
+                }
+                if(!containsError){
+                    charList = temp;
+                }
+                
             } else if (lineNum == 3){
-                fileStream >> x >> y;
-                x=x+1;
-                y=((height)-y)-1;
-            } else if (lineNum == 4){
-                int widthTemp = 0;
-                int heightTemp = 0;
-                fileStream >> heightTemp >> widthTemp;
-                if (widthTemp !=0){
-                    width = ++widthTemp;
+                string widthTemp;
+                string heightTemp;
+                stringstream ss;
+                int realWidth;
+                int realHeight;
+                string temp;
+                getline(fileStream, temp);
+                if(temp.size()!=0){
+                    ss.str(temp);
+                    ss >> widthTemp >> heightTemp;
                 }
-                if (heightTemp !=0){
-                    height = heightTemp;
+                if(widthTemp.size()!=0 && heightTemp.size()!=0){
+                
+                    for(int i = 0; i < widthTemp.size(); i++){
+                        if((!isdigit(widthTemp[i]) || !isdigit(heightTemp[i])) && !containsError){
+                            cout << "ERROR ON LINE 4: ";
+                            cout << "Command error detected, please try again." << endl;
+                            containsError = true;
+                        }
+                    }
+                
+                    if(!containsError){
+                        realWidth = stoi(widthTemp);
+                        realHeight = stoi(heightTemp);
+                        if(realHeight < 11){
+                            cout << "WARNING ON LINE 4: ";
+                            cout << "Height of the board size is too low, characters may not be displayed properly." << endl;
+                            containsWarning = true;
+                        }
+                
+                        if(realWidth < 40){
+                            cout << "WARNING ON LINE 4: ";
+                            cout << "Width of the board size is too low, characters may not be displayed properly." << endl;
+                            containsWarning = true;
+                        }
+                    
+                        if (realWidth !=0){
+                            width = ++realWidth;
+                        }
+                        if (realHeight !=0){
+                            height = realHeight;
+                        }
+                    }
                 }
+            } else if (lineNum == 4){ //SANITIZE THIS LINE
+                string temp;
+                getline(fileStream, temp);
+                
+                if(fileStream.fail()){
+                    cout << "ERROR ON LINE 5: ";
+                    cout << "Non integer value for anchor point detected, please try again. (Syntax: X Y)" << endl;
+                    containsError = true;
+                }
+                if(!containsError){
+                    x=x+1;
+                    y=((height)-y)-1;
+                }
+                if(x > width-1){
+                    cout << "ERROR ON LINE 5: ";
+                    cout << "X coordinate has exceeded your border width size. Please try again." << endl;
+                    containsError = true;
+                }
+                if(x < 1){
+                    cout << "ERROR ON LINE 5: ";
+                    cout << "X coordinate has set below your border width size. Please try again." << endl;
+                    containsError = true;
+                }
+                if(y < 0){
+                    cout << "ERROR ON LINE 5: ";
+                    cout << "Y coordinate has set below your border height size. Please try again." << endl;
+                    containsError = true;
+                }
+                if(y >height){
+                    cout << "ERROR ON LINE 5: ";
+                    cout << "Y coordinate has set below your border height size. Please try again." << endl;
+                    containsError = true;
+                }
+                
             } else if (lineNum == 5){
+                fileStream >> timeSteps;
+                if(fileStream.fail()){
+                    cout << "ERROR ON LINE 6: ";
+                    cout << "Invalid input for time steps, please try again. (Enter -1 for unlimited time steps) " << endl;
+                    containsError = true;
+                } else{
+                    if(timeSteps < -1){
+                        cout << "ERROR ON LINE 6: ";
+                        cout << "Invalid input for time steps, value less than -1 is not allowed." << endl;
+                        containsError = true;
+                    }
+                }
+            } else if(lineNum==6){
+                
                 string dir;
                 string wrapAround;
                 string tmpRot;
                 fileStream >> dir >> wrapAround;
-                
+                fileStream >> tmpRot;
                 if(dir == "lr"){
                     directionInput = HORIZONTAL_RIGHT;
                 } else if(dir == "rl"){
@@ -771,22 +911,56 @@ void fStreamHandler(){
                     directionInput = VERTICAL_DOWN;
                 } else if(dir == "du"){
                     directionInput = VERTICAL_UP;
+                } else if(dir == "st"){
+                    
+                } else{
+                    cout << "ERROR ON LINE 7, 1st command: ";
+                    cout << "Invalid movement command. Please try again. (Syntax: lr OR rl OR ud OR du OR st)" << endl;
+                    containsError = true;
+                }
+                
+                if((wrapAround !="wr" && wrapAround != "rot90" && wrapAround != "rot-90" && wrapAround != "mr" && wrapAround.size()!=0)){
+                    cout << "ERROR ON LINE 7, 2nd command: ";
+                    cout << "Invalid wrap around command. Please try again. (Syntax: wr OR (LEAVE_BLANK) )" << endl;
+                    containsError = true;
+                }
+                if((tmpRot.size()!=0 && tmpRot!="rot90") && (tmpRot.size()!=0 && tmpRot!="rot-90") && (tmpRot.size()!=0 && tmpRot!="mr")){
+                    cout << "ERROR ON LINE 7, 3nd command: ";
+                    cout << "Invalid rotation command. Please try again. (Syntax: rot90 OR rot-90 OR mr)" << endl;
+                    containsError = true;
                 }
                 
                 if(wrapAround == "wr"){
                     isWrapAroundEnabled = true;
-                    fileStream >> tmpRot;
-                } else if(wrapAround == "rot90" || (wrapAround == "rot90" && tmpRot.size()>3)){
+                    
+                }
+                if(wrapAround == "rot90" || (tmpRot == "rot90" && tmpRot.size()>3)){
                     rot = CLOCKWISE_90;
-                } else if(wrapAround == "rot-90" || (wrapAround == "rot-90" && tmpRot.size()>3)){
+                } else if(wrapAround == "rot-90" || (tmpRot == "rot-90" && tmpRot.size()>3)){
                     rot = ANTI_CLOCKWISE_90;
-                } else if(wrapAround == "mr" || (wrapAround == "mr" && tmpRot.size()>3)){
+                } else if(wrapAround == "mr" || (tmpRot == "mr" && tmpRot.size()>3)){
                     rot = MIRROR;
                 } else {
                     rot = NORMAL;
                 }
                 
+                
+                if(containsError){
+                    exit(1);
+                }
+                if(containsWarning){
+                    #ifdef __APPLE__
+                            system("read");
+                    #endif
+                    #ifdef _WIN32
+                            system("pause");
+                    #endif
+                    #ifdef __linux__
+                            system("read");
+                    #endif
+                }
                 break;
+                
             }
             lineNum ++;
         }
@@ -977,16 +1151,20 @@ string *charStager(){ // this func responsible to read the user's inputted strin
                 totalStagingIndex = 11; //set it as 11 as original total array index for all char arts.
                 break;
         }
-        
-        for (int j = 0; j < totalStagingIndex; j++) {
-            string listOfChars = stagedChar[j];
-            for (int i = 0; i<listOfChars.size(); i++) {
-                if (listOfChars[i] == '=' && listOfChars[i] != ' ') {
-                    listOfChars[i] = drawingChar;
+        if(isInceptionEnabled){
+            
+        } else{
+            for (int j = 0; j < totalStagingIndex; j++) {
+                string listOfChars = stagedChar[j];
+                for (int i = 0; i<listOfChars.size(); i++) {
+                    if (listOfChars[i] == '=' && listOfChars[i] != ' ') {
+                        listOfChars[i] = drawingChar;
+                    }
                 }
+                stagedChar[j] = listOfChars;
             }
-            stagedChar[j] = listOfChars;
         }
+        
     }
     
     isCodeExecuted = true; // set to true once this func is being called and completed
@@ -1047,7 +1225,6 @@ void clear(){ // clear the previously rendered frame
 }
 
 void render(){ // this func responsible to render all the scenes including movement, char arts, and animations.
-    cout << totalStagingIndex << endl;
     charArts charObj;
     string *ptr_stagedChar = charStager(); // stores the address of stagedChar array from charStager()
     static int skipWidth = 0; // spaces needs to be deleted
