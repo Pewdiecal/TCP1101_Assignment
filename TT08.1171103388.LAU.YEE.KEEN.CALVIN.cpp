@@ -41,6 +41,7 @@ string *charStager(); //Staging function used to put char on stage
 void inputHandler(); //Handle user inputs
 void fStreamHandler();
 void delay2();
+void inception(char c, bool isInceptionEnabled,string *array);
 void clear();
 void render(); //renders animation, characters on screen
 void coordinateManager(bool pauseStats); //calculates and manages the whole coordinates system
@@ -752,7 +753,7 @@ void fStreamHandler(){
                     }
                     if(temp == "incep_enable" && !containsError){
                         isInceptionEnabled = true;
-                        exit(1);
+                        
                     } else if(!containsError){
                         drawingChar = temp[0];
                     }
@@ -1163,6 +1164,7 @@ string *charStager(){ // this func responsible to read the user's inputted strin
         } else if(toupper(charList[i])=='N'){
             ptr = charObj.N();
         }
+        inception(toupper(charList[i]), isInceptionEnabled, ptr);
         if(!isCodeExecuted){ // if this func is not being executed before, only then store all the element from the char arts array into the staging array.
             for (int e = 0; e < 11; e++) { // store the char arts array that has been pointed by ptr into the staging array
                 cachingArray[e].append(*(ptr+e)); // ptr will be dereferenced according to the address before being stored into the array
@@ -1210,9 +1212,7 @@ string *charStager(){ // this func responsible to read the user's inputted strin
                 totalStagingIndex = 11; //set it as 11 as original total array index for all char arts.
                 break;
         }
-        if(isInceptionEnabled){
-            
-        } else{
+        if(!isInceptionEnabled){
             for (int j = 0; j < totalStagingIndex; j++) {
                 string listOfChars = stagedChar[j];
                 for (int i = 0; i<listOfChars.size(); i++) {
@@ -1228,6 +1228,21 @@ string *charStager(){ // this func responsible to read the user's inputted strin
     
     isCodeExecuted = true; // set to true once this func is being called and completed
     return stagedChar; // return the stagedChar array address
+}
+
+void inception(char c, bool isEnabled, string *array){
+    if(isEnabled){
+        for (int j = 0; j < 11; j++) {
+            string listOfChars = array[j];
+            for (int i = 0; i<listOfChars.size(); i++) {
+                if (listOfChars[i] == '=' && listOfChars[i] != ' ') {
+                    listOfChars[i] = c;
+                }
+            }
+            array[j] = listOfChars;
+        }
+        
+    }
 }
 
 void delay2()
