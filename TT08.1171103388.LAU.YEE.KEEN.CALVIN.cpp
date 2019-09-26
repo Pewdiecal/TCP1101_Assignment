@@ -745,22 +745,20 @@ void fStreamHandler(){
                 string temp;
                 getline(fileStream, temp);
                 if(temp.size()!=0){
-                    if (temp.size()>1) {
+                    if (temp.size()>1 && temp != "incep_enable") {
                         cout << "ERROR ON LINE 7: ";
                         cout << "Please enter with only 1 character and re-run the program." << endl;
                         containsError = true;
                     }
-                    
-                    if(temp.size()!=0 && !containsError){
-                        drawingChar = temp[0];
-                    }
-                } else{
-                    if(temp == "incep_enable"){
+                    if(temp == "incep_enable" && !containsError){
                         isInceptionEnabled = true;
                         exit(1);
+                    } else if(!containsError){
+                        drawingChar = temp[0];
                     }
+                    
                 }
-                
+
             } else if (lineNum == 0){ //SPEED
                 string temp;
                 getline(fileStream, temp);
@@ -796,9 +794,11 @@ void fStreamHandler(){
                 }
                 for(int i = 0; i < temp.size(); i++){
                     if(!isdigit(temp[i]) && !isalpha(temp[i]) && !containsError){
-                        cout << "ERROR ON LINE 2: ";
-                        cout << "Input contains forbidden symbols characters." << endl;
-                        containsError = true;
+                        if(temp[i] != ' '){
+                            cout << "ERROR ON LINE 2: ";
+                            cout << "Input contains forbidden symbols characters." << endl;
+                            containsError = true;
+                        }
                     }
                 }
                 if(!containsError){
@@ -813,19 +813,9 @@ void fStreamHandler(){
                 int realHeight;
                 string temp;
                 getline(fileStream, temp);
-                if(temp.size()!=0){
-                    ss.str(temp);
-                    while(ss >> widthTemp >> heightTemp){
-                        static int commandCount = 0;
-                        if(commandCount > 2){
-                            cout << "ERROR ON LINE 6: ";
-                            cout << "Unknown command detected, please try again. (Syntax: X Y)" << endl;
-                            containsError = true;
-                        }
-                        commandCount++;
-                    }
-                }
-                if(widthTemp.size()!=0 && heightTemp.size()!=0 && !containsError){
+                ss.str(temp);
+                ss >> widthTemp >> heightTemp;
+                if(widthTemp.size()!=0 && heightTemp.size()!=0){
                 
                     for(int i = 0; i < widthTemp.size(); i++){
                         if(!isdigit(widthTemp[i])){
@@ -873,39 +863,26 @@ void fStreamHandler(){
                 string Y_temp;
                 stringstream sbuffer;
                 getline(fileStream, temp);
-                
-                if(temp.size()!=0){
-                    sbuffer.str(temp);
-                    while(sbuffer >> X_temp >> Y_temp){
-                        static int commandCount = 0;
-                        if(commandCount > 2){
-                            cout << "ERROR ON LINE 5: ";
-                            cout << "Unknown command detected, please try again. (Syntax: X Y)" << endl;
-                            containsError = true;
-                        }
-                        commandCount++;
+                sbuffer.str(temp);
+                sbuffer >> X_temp >> Y_temp;
+                for(int i=0; i < X_temp.size(); i++){
+                    if(!isdigit(X_temp[i])){
+                        cout << "ERROR ON LINE 5: ";
+                        cout << "Non integer value for anchor point X detected, please try again. (Syntax: X Y)" << endl;
+                        containsError = true;
+                        break;
+                    }
+                }
+                       
+                for(int i=0; i < Y_temp.size(); i++){
+                    if(!isdigit(Y_temp[i])){
+                        cout << "ERROR ON LINE 5: ";
+                        cout << "Non integer value for anchor point Y detected, please try again. (Syntax: X Y)" << endl;
+                        containsError = true;
+                        break;
                     }
                 }
                 
-                if(!containsError){
-                    for(int i=0; i < X_temp.size(); i++){
-                        if(!isdigit(X_temp[i])){
-                            cout << "ERROR ON LINE 5: ";
-                            cout << "Non integer value for anchor point X detected, please try again. (Syntax: X Y)" << endl;
-                            containsError = true;
-                            break;
-                        }
-                    }
-                           
-                    for(int i=0; i < Y_temp.size(); i++){
-                        if(!isdigit(Y_temp[i])){
-                            cout << "ERROR ON LINE 5: ";
-                            cout << "Non integer value for anchor point Y detected, please try again. (Syntax: X Y)" << endl;
-                            containsError = true;
-                            break;
-                        }
-                    }
-                }
                 if(!containsError){
                     x = stoi(X_temp);
                     y = stoi(Y_temp);
@@ -945,7 +922,6 @@ void fStreamHandler(){
                 getline(fileStream, timeSteps_buffer);
                 stringstream ss;
                 ss.str(timeSteps_buffer);
-                
                 for(int i=0; i < timeSteps_buffer.size(); i++){
                     static int minusCounter = 0;
                     if(timeSteps_buffer[i]=='-'){
@@ -965,15 +941,14 @@ void fStreamHandler(){
                     }
                     
                 }
-                        
-                if(timeSteps < -1 && !containsError){
-                    cout << "ERROR ON LINE 3: ";
-                    cout << "Invalid input for time steps, value less than -1 is not allowed." << endl;
-                    containsError = true;
-                }
                 
                 if(!containsError){
                     ss >> timeSteps;
+                    if(timeSteps < -1 && !containsError){
+                        cout << "ERROR ON LINE 3: ";
+                        cout << "Invalid input for time steps, value less than -1 is not allowed." << endl;
+                        containsError = true;
+                    }
                 }
                 
             } else if(lineNum==3){ //dir
@@ -985,18 +960,7 @@ void fStreamHandler(){
                 getline(fileStream, data_buffer);
                 stringstream ss;
                 ss.str(data_buffer);
-                
-                while(ss >> dir >> wrapAround >> tmpRot){
-                    static int commandCount = 0;
-                    if(commandCount > 3){
-                        cout << "ERROR ON LINE 4: ";
-                        cout << "Invalid command syntax. Please try again. (Syntax: lr wr rot90)" << endl;
-                        containsError = true;
-                        break;
-                    }else{
-                        commandCount++;
-                    }
-                }
+                ss >> dir >> wrapAround >> tmpRot;
                 if(dir == "lr"){
                     directionInput = HORIZONTAL_RIGHT;
                 } else if(dir == "rl"){
@@ -1039,10 +1003,12 @@ void fStreamHandler(){
                 }
                 
                 
+            }
+            if(fileStream.eof()){
                 if(containsError){
                     exit(1);
                 }
-                if(containsWarning){
+                if(containsWarning && !containsError){
                     #ifdef __APPLE__
                             system("read");
                     #endif
@@ -1053,9 +1019,6 @@ void fStreamHandler(){
                             system("read");
                     #endif
                 }
-                
-            }
-            if(fileStream.eof()){
                 break;
             }
             lineNum ++;
