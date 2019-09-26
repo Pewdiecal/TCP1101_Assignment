@@ -732,6 +732,7 @@ void fStreamHandler(){
     string fileName;
     bool containsError = false;
     bool containsWarning = false;
+    string memory_dump;
     cout << "Please enter your input filename: ";
     getline (cin, fileName);
     
@@ -740,12 +741,12 @@ void fStreamHandler(){
     if (fileStream.is_open()){
         while (true){
             static int lineNum = 0;
-            if(lineNum == 0){
+            if(lineNum == 6){ //CHAR
                 string temp;
                 getline(fileStream, temp);
                 if(temp.size()!=0){
                     if (temp.size()>1) {
-                        cout << "ERROR ON LINE 1: ";
+                        cout << "ERROR ON LINE 7: ";
                         cout << "Please enter with only 1 character and re-run the program." << endl;
                         containsError = true;
                     }
@@ -760,17 +761,17 @@ void fStreamHandler(){
                     }
                 }
                 
-            } else if (lineNum == 1){
+            } else if (lineNum == 0){ //SPEED
                 string temp;
                 getline(fileStream, temp);
                 if(temp.size()==0){
-                    cout << "ERROR ON LINE 2: ";
+                    cout << "ERROR ON LINE 1: ";
                     cout << "Missing scrolling speed value, please try again. (Syntax: 1=slowest -> 10=fastest)" << endl;
                     containsError = true;
                 }
                 for(int i = 0; i < temp.size(); i++){
                     if (!isdigit(temp[i])) {
-                        cout << "ERROR ON LINE 2: ";
+                        cout << "ERROR ON LINE 1: ";
                         cout << "Non integer value detected, please try again." << endl;
                         containsError = true;
                         break;
@@ -779,23 +780,23 @@ void fStreamHandler(){
                 if(!containsError){
                     scrollingSpeed = stoi(temp);
                 }
-            } else if (lineNum == 2){
+            } else if (lineNum == 1){ //String
                 string temp;
                 getline(fileStream,temp);
                 
                 if(temp.size()==0){
-                    cout << "ERROR ON LINE 3: ";
+                    cout << "ERROR ON LINE 2: ";
                     cout << "Missing string input, please try again." << endl;
                     containsError = true;
                 }
                 if(temp.size() > 25){
-                    cout << "ERROR ON LINE 3: ";
+                    cout << "ERROR ON LINE 2: ";
                     cout << "Input has exceeded the 25 character limit." << endl;
                     containsError = true;
                 }
                 for(int i = 0; i < temp.size(); i++){
                     if(!isdigit(temp[i]) && !isalpha(temp[i]) && !containsError){
-                        cout << "ERROR ON LINE 3: ";
+                        cout << "ERROR ON LINE 2: ";
                         cout << "Input contains forbidden symbols characters." << endl;
                         containsError = true;
                     }
@@ -804,7 +805,7 @@ void fStreamHandler(){
                     charList = temp;
                 }
                 
-            } else if (lineNum == 3){
+            } else if (lineNum == 5){ //Board size
                 string widthTemp;
                 string heightTemp;
                 stringstream ss;
@@ -814,15 +815,32 @@ void fStreamHandler(){
                 getline(fileStream, temp);
                 if(temp.size()!=0){
                     ss.str(temp);
-                    ss >> widthTemp >> heightTemp;
+                    while(ss >> widthTemp >> heightTemp){
+                        static int commandCount = 0;
+                        if(commandCount > 2){
+                            cout << "ERROR ON LINE 6: ";
+                            cout << "Unknown command detected, please try again. (Syntax: X Y)" << endl;
+                            containsError = true;
+                        }
+                        commandCount++;
+                    }
                 }
-                if(widthTemp.size()!=0 && heightTemp.size()!=0){
+                if(widthTemp.size()!=0 && heightTemp.size()!=0 && !containsError){
                 
                     for(int i = 0; i < widthTemp.size(); i++){
-                        if((!isdigit(widthTemp[i]) || !isdigit(heightTemp[i])) && !containsError){
-                            cout << "ERROR ON LINE 4: ";
-                            cout << "Command error detected, please try again." << endl;
+                        if(!isdigit(widthTemp[i])){
+                            cout << "ERROR ON LINE 6: ";
+                            cout << "Command error detected on width input, please try again." << endl;
                             containsError = true;
+                            break;
+                        }
+                    }
+                    for(int i = 0; i < heightTemp.size(); i++){
+                        if(!isdigit(heightTemp[i])){
+                            cout << "ERROR ON LINE 6: ";
+                            cout << "Command error detected on height input, please try again." << endl;
+                            containsError = true;
+                            break;
                         }
                     }
                 
@@ -830,13 +848,13 @@ void fStreamHandler(){
                         realWidth = stoi(widthTemp);
                         realHeight = stoi(heightTemp);
                         if(realHeight < 11){
-                            cout << "WARNING ON LINE 4: ";
+                            cout << "WARNING ON LINE 6: ";
                             cout << "Height of the board size is too low, characters may not be displayed properly." << endl;
                             containsWarning = true;
                         }
                 
                         if(realWidth < 40){
-                            cout << "WARNING ON LINE 4: ";
+                            cout << "WARNING ON LINE 6: ";
                             cout << "Width of the board size is too low, characters may not be displayed properly." << endl;
                             containsWarning = true;
                         }
@@ -849,60 +867,136 @@ void fStreamHandler(){
                         }
                     }
                 }
-            } else if (lineNum == 4){ //SANITIZE THIS LINE
+            } else if (lineNum == 4){ //Anchor
                 string temp;
+                string X_temp;
+                string Y_temp;
+                stringstream sbuffer;
                 getline(fileStream, temp);
                 
-                if(fileStream.fail()){
-                    cout << "ERROR ON LINE 5: ";
-                    cout << "Non integer value for anchor point detected, please try again. (Syntax: X Y)" << endl;
-                    containsError = true;
-                }
-                if(!containsError){
-                    x=x+1;
-                    y=((height)-y)-1;
-                }
-                if(x > width-1){
-                    cout << "ERROR ON LINE 5: ";
-                    cout << "X coordinate has exceeded your border width size. Please try again." << endl;
-                    containsError = true;
-                }
-                if(x < 1){
-                    cout << "ERROR ON LINE 5: ";
-                    cout << "X coordinate has set below your border width size. Please try again." << endl;
-                    containsError = true;
-                }
-                if(y < 0){
-                    cout << "ERROR ON LINE 5: ";
-                    cout << "Y coordinate has set below your border height size. Please try again." << endl;
-                    containsError = true;
-                }
-                if(y >height){
-                    cout << "ERROR ON LINE 5: ";
-                    cout << "Y coordinate has set below your border height size. Please try again." << endl;
-                    containsError = true;
-                }
-                
-            } else if (lineNum == 5){
-                fileStream >> timeSteps;
-                if(fileStream.fail()){
-                    cout << "ERROR ON LINE 6: ";
-                    cout << "Invalid input for time steps, please try again. (Enter -1 for unlimited time steps) " << endl;
-                    containsError = true;
-                } else{
-                    if(timeSteps < -1){
-                        cout << "ERROR ON LINE 6: ";
-                        cout << "Invalid input for time steps, value less than -1 is not allowed." << endl;
-                        containsError = true;
+                if(temp.size()!=0){
+                    sbuffer.str(temp);
+                    while(sbuffer >> X_temp >> Y_temp){
+                        static int commandCount = 0;
+                        if(commandCount > 2){
+                            cout << "ERROR ON LINE 5: ";
+                            cout << "Unknown command detected, please try again. (Syntax: X Y)" << endl;
+                            containsError = true;
+                        }
+                        commandCount++;
                     }
                 }
-            } else if(lineNum==6){
                 
+                if(!containsError){
+                    for(int i=0; i < X_temp.size(); i++){
+                        if(!isdigit(X_temp[i])){
+                            cout << "ERROR ON LINE 5: ";
+                            cout << "Non integer value for anchor point X detected, please try again. (Syntax: X Y)" << endl;
+                            containsError = true;
+                            break;
+                        }
+                    }
+                           
+                    for(int i=0; i < Y_temp.size(); i++){
+                        if(!isdigit(Y_temp[i])){
+                            cout << "ERROR ON LINE 5: ";
+                            cout << "Non integer value for anchor point Y detected, please try again. (Syntax: X Y)" << endl;
+                            containsError = true;
+                            break;
+                        }
+                    }
+                }
+                if(!containsError){
+                    x = stoi(X_temp);
+                    y = stoi(Y_temp);
+                    
+                    
+                    if(x > width-1){
+                        cout << "ERROR ON LINE 5: ";
+                        cout << "X coordinate has exceeded your border width size. Please try again." << endl;
+                        containsError = true;
+                    }
+                    if(x < 0){
+                        cout << "ERROR ON LINE 5: ";
+                        cout << "X coordinate has set below your border width size. Please try again." << endl;
+                        containsError = true;
+                    }
+                    if(y < 0){
+                        cout << "ERROR ON LINE 5: ";
+                        cout << "Y coordinate has set below your border height size. Please try again." << endl;
+                        
+                        containsError = true;
+                    }
+                    if(y >height){
+                        cout << "ERROR ON LINE 5: ";
+                        cout << "Y coordinate has exceeded your border width size. Please try again." << endl;
+                        containsError = true;
+                    }
+                    
+                    if(!containsError){
+                        x=x+1;
+                        y=((height)-y)-1;
+                    }
+                }
+                
+            } else if (lineNum == 2){ //time step
+                
+                string timeSteps_buffer;
+                getline(fileStream, timeSteps_buffer);
+                stringstream ss;
+                ss.str(timeSteps_buffer);
+                
+                for(int i=0; i < timeSteps_buffer.size(); i++){
+                    static int minusCounter = 0;
+                    if(timeSteps_buffer[i]=='-'){
+                        minusCounter++;
+                    }else{
+                        if(minusCounter >1){
+                            cout << "ERROR ON LINE 3: ";
+                            cout << "Invalid input for time steps, please try again. (Enter -1 for unlimited time steps) " << endl;
+                            containsError = true;
+                            break;
+                        } else if(!isdigit(timeSteps_buffer[i])){
+                            cout << "ERROR ON LINE 3: ";
+                            cout << "Invalid input for time steps, please try again. (Enter -1 for unlimited time steps) " << endl;
+                            containsError = true;
+                            break;
+                        }
+                    }
+                    
+                }
+                        
+                if(timeSteps < -1 && !containsError){
+                    cout << "ERROR ON LINE 3: ";
+                    cout << "Invalid input for time steps, value less than -1 is not allowed." << endl;
+                    containsError = true;
+                }
+                
+                if(!containsError){
+                    ss >> timeSteps;
+                }
+                
+            } else if(lineNum==3){ //dir
+                
+                string data_buffer;
                 string dir;
                 string wrapAround;
                 string tmpRot;
-                fileStream >> dir >> wrapAround;
-                fileStream >> tmpRot;
+                getline(fileStream, data_buffer);
+                stringstream ss;
+                ss.str(data_buffer);
+                
+                while(ss >> dir >> wrapAround >> tmpRot){
+                    static int commandCount = 0;
+                    if(commandCount > 3){
+                        cout << "ERROR ON LINE 4: ";
+                        cout << "Invalid command syntax. Please try again. (Syntax: lr wr rot90)" << endl;
+                        containsError = true;
+                        break;
+                    }else{
+                        commandCount++;
+                    }
+                }
                 if(dir == "lr"){
                     directionInput = HORIZONTAL_RIGHT;
                 } else if(dir == "rl"){
@@ -912,20 +1006,20 @@ void fStreamHandler(){
                 } else if(dir == "du"){
                     directionInput = VERTICAL_UP;
                 } else if(dir == "st"){
-                    
+                    directionInput = 4;
                 } else{
-                    cout << "ERROR ON LINE 7, 1st command: ";
+                    cout << "ERROR ON LINE 4, 1st command: ";
                     cout << "Invalid movement command. Please try again. (Syntax: lr OR rl OR ud OR du OR st)" << endl;
                     containsError = true;
                 }
                 
                 if((wrapAround !="wr" && wrapAround != "rot90" && wrapAround != "rot-90" && wrapAround != "mr" && wrapAround.size()!=0)){
-                    cout << "ERROR ON LINE 7, 2nd command: ";
+                    cout << "ERROR ON LINE 4, 2nd command: ";
                     cout << "Invalid wrap around command. Please try again. (Syntax: wr OR (LEAVE_BLANK) )" << endl;
                     containsError = true;
                 }
                 if((tmpRot.size()!=0 && tmpRot!="rot90") && (tmpRot.size()!=0 && tmpRot!="rot-90") && (tmpRot.size()!=0 && tmpRot!="mr")){
-                    cout << "ERROR ON LINE 7, 3nd command: ";
+                    cout << "ERROR ON LINE 4, 3nd command: ";
                     cout << "Invalid rotation command. Please try again. (Syntax: rot90 OR rot-90 OR mr)" << endl;
                     containsError = true;
                 }
@@ -959,8 +1053,10 @@ void fStreamHandler(){
                             system("read");
                     #endif
                 }
-                break;
                 
+            }
+            if(fileStream.eof()){
+                break;
             }
             lineNum ++;
         }
